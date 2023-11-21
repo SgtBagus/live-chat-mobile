@@ -3,9 +3,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { LayoutDefault } from "../Layout"; 
 
+import Login from "../Pages/Auth/Login";
+
 import Home from "../Pages/Home";
 
-// import { NotFound404 } from "../Layout/404";
 import { AuthContext } from "../context/AuthContext";
 
 
@@ -46,7 +47,7 @@ const RoutesComponents = () => {
     <Routes>
       <Route path="" element={RenderDefaultLayout(<Home dataLogin={currentUser} />, "Home", "/" )}/>
 
-      {/* <Route path="*" element={<NotFound404 />} /> */}
+      <Route path="login" element={<Login />}/>
     </Routes>
   );
 }

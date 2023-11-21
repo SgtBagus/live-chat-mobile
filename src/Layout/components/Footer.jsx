@@ -29,7 +29,7 @@ export const FooterComponents = () => {
                 <li>
                     <a href="#!" className="mobile-box">
                         <div className="mobile-icon">
-                            <i class="ri-chat-1-fill" />
+                            <i className="ri-chat-1-fill" />
                         </div>
                         <div className="mobile-name">
                             <h5>Konsultasi</h5>

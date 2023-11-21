@@ -1,19 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 
 export const Button = ({
-    className, label, link,
+    className, label, onClick,
 }) => {
-    const navigate = useNavigate();
-    const handelNavigate = (path) => {
-        return navigate(path);
-    }
-
     return (
         <button 
             className={`btn ${className}`}
-            onClick={() => handelNavigate(link)}
+            onClick={() => onClick()}
         >
             {label}
         </button>
@@ -23,13 +17,13 @@ export const Button = ({
 Button.propTypes = {
     className: PropTypes.string,
     label: PropTypes.string,
-    link: PropTypes.string,
+    onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
     className: 'explore-btn',
     label: 'Button Text',
-    link: '#',
+    onClick: () => {},
 };
 
 export default Button;
