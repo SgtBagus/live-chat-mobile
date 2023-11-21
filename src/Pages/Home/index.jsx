@@ -62,12 +62,6 @@ const Home = () => {
               title: 'Category List',
               link: '#',
             },
-            {
-              id: 4,
-              src: 'https://media.printables.com/media/prints/415756/images/3449561_0766b7c8-1a3a-46e6-a783-5708bb623946/thumbs/inside/1280x960/png/qian-nian-xue-yuan.webp',
-              title: 'Category List',
-              link: '#',
-            },
           ]}
         />
       </Container>
