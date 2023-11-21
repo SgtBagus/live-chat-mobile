@@ -1,0 +1,7 @@
+<svg viewBox="0 0 236 230" id="qr-box" xmlns="http://www.w3.org/2000/svg">
+	<rect width="236" height="230" />
+	<path d="M3 58V3H58" stroke="white" stroke-width="6" />
+	<path d="M233 172V227H178" stroke="white" stroke-width="6" />
+	<path d="M3 172V227H58" stroke="white" stroke-width="6" />
+	<path d="M233 58V3H178" stroke="white" stroke-width="6" />
+</svg>
