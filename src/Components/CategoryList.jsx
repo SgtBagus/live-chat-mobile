@@ -12,7 +12,6 @@ export const CategoryList = ({
         return navigate(path);
     }
 
-    console.log(data);
     return (
         <ul className="category-list">
             {
@@ -54,7 +53,7 @@ CategoryList.defaultProps = {
         src: DEFAULT_IMAGE_ICON,
         title: 'Category List',
         link: '#',
-    }]
+    }],
 };
 
 export default CategoryList;

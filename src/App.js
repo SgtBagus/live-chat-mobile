@@ -7,7 +7,6 @@ import Routes from './Routes/Routes';
 import { AuthContextProvider } from "./context/AuthContext";
 
 import 'react-notifications/lib/notifications.css';
-import './App.scss';
 
 function App() {
   return (

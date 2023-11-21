@@ -5,15 +5,16 @@ import { FooterComponents } from './components/Footer';
 
 export const LayoutDefault = ({ dataLogin, children, pageName }) => (
     <>
-        <HeaderComponents dataLogin={dataLogin} />
-            
-            <div className="min-loader-wrapper">
-                <img src="../assets/images/favicon/2.svg" className="img-fluid loader" alt="" />
-                <div className="loader-section ecommerce-color section-left"></div>
-                <div className="loader-section ecommerce-color section-right"></div>
-            </div>
+        <div className="min-loader-wrapper">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png" className="img-fluid loader" alt="" />
+            <div className="loader-section ecommerce-color section-left"></div>
+            <div className="loader-section ecommerce-color section-right"></div>
+        </div>
 
+        <HeaderComponents dataLogin={dataLogin} />
             {children}
+            
+            <div style={{ height: '100px' }}/>
         <FooterComponents />
     </>
 )
