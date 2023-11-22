@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const HeaderComponents = ({ dataLogin }) => {
+export const HeaderComponents = () => {
     return (
         <header className="header-style-5">
             <div className="header-left">

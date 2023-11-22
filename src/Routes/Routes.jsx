@@ -3,10 +3,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { LayoutDefault } from "../Layout"; 
 
+import AuthLogin from "../Pages/Auth/";
 import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
+import ForgetPassword from  "../Pages/Auth/ForgetPassword";
 
 import Home from "../Pages/Home";
+import Account from "../Pages/Account";
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -27,7 +30,7 @@ const RoutesComponents = () => {
 
     if (!isLoading) {
       if (!currentUser) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/AuthLogin" />;
       }
     }
 
@@ -48,13 +51,24 @@ const RoutesComponents = () => {
     <Routes>
       <Route path="" element={
           <ProtectedRoute>
-            {RenderDefaultLayout(<Home dataLogin={currentUser} />, "Home", currentUser, "/" )}
+            {RenderDefaultLayout(<Home />, "Home", "/" )}
+          </ProtectedRoute>
+        }
+      />
+      <Route path="account" element={
+          <ProtectedRoute>
+            {RenderDefaultLayout(<Account />, "Profil", "/account" )}
           </ProtectedRoute>
         }
       />
 
 
 
+      <Route path="AuthLogin" element={
+        <HasRoute>
+          <AuthLogin />
+        </HasRoute>
+      } />
       <Route path="login" element={
           <HasRoute>
             <Login />
@@ -63,6 +77,11 @@ const RoutesComponents = () => {
       <Route path="register" element={
         <HasRoute>
           <Register />
+        </HasRoute>
+      } />
+      <Route path="forget-password" element={
+        <HasRoute>
+          <ForgetPassword />
         </HasRoute>
       } />
     </Routes>

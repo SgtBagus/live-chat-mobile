@@ -99,6 +99,7 @@ const Register = () => {
             await sendEmailVerificationEvent(res.user);
 
             handelNavigate('/')
+            await setIsLoading(false);
         } catch (err) {
             setErrorMessages(catchError(err));
             await setIsLoading(false);

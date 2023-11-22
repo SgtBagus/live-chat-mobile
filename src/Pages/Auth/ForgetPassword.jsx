@@ -1,23 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { sendPasswordResetEmail } from "firebase/auth";
+
+import { auth } from "../../firebase";
 
 import InputText from "../../Components/Form/InputText";
 import Button from "../../Components/Button";
 
-import { auth, db } from "../../firebase";
-
 import { catchError, validateEmail } from "../../Helper/helper";
 import { GENERATE_ERROR_MESSAGE } from "../../Helper/error";
 
-const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [formValidate, setFormValidate] = useState({
-    emailValidate: false,
-    passwordValidate: false,
-  });
+const ForgetPassword = () => {
+  const [form, setForm] = useState({ email: "" });
+  const [formValidate, setFormValidate] = useState({ emailValidate: false });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmmit, setIsFormSubmmit] = useState(false);
   const [errorMessages, setErrorMessages] = useState(null);
@@ -27,8 +23,8 @@ const Login = () => {
     return navigate(path);
   };
 
-  const { email, password } = form;
-  const { emailValidate, passwordValidate } = formValidate;
+  const { email } = form;
+  const { emailValidate } = formValidate;
 
   const changeInputHandler = async (type, val, e) => {
     const newForm = update(form, {
@@ -44,17 +40,11 @@ const Login = () => {
     await setFormValidate(newFormValidate);
   };
 
-  const validateForm = () => emailValidate && passwordValidate;
-
   const submitHandel = async () => {
     setIsFormSubmmit(true);
 
-    const isFormValid = await validateForm();
-    if (!isFormValid) {
-      setFormValidate({
-        emailValidate: false,
-        passwordValidate: false,
-      });
+    if (!emailValidate) {
+      setFormValidate({ emailValidate: false });
     } else {
       await setIsLoading(true);
       await handleSubmit();
@@ -63,26 +53,17 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const data = await query(collection(db, "users"), where("email", "==", email));
-      const userData = await getDocs(data);
-      const findData = userData.docs.map(doc => doc.data())[0];
-      if (!findData) throw new Error('Email Belum Terdaftar');
-
-      const { is_admin: isAdmin, email: loginEmail } = findData;
-
-      if (!isAdmin) {
-          await signInWithEmailAndPassword(auth, loginEmail, password).then(() => {
-              handelNavigate("/")
-          }).catch((err) => {
-              throw new Error('Email dan Password Anda Salah')
-          });
-      } else {
-          throw new Error('Tidak Memiliki Akses');
-      }
-      await setIsLoading(false);
-    } catch (err) {
-        setErrorMessages(catchError(err));
+      await sendPasswordResetEmail(auth, email)
+        .then(() => {
+          setErrorMessages("Email Sudah Terkirim di Inbox Anda !");
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
         await setIsLoading(false);
+    } catch (err) {
+      setErrorMessages(catchError(err));
+      await setIsLoading(false);
     }
   };
 
@@ -91,9 +72,9 @@ const Login = () => {
       <div className="ecommerce-auth d-block bg-white">
         <div className="custom-container">
           <h1 className="top-title" style={{ color: "unset" }}>
-            Hallo !
+            Lupa !!
           </h1>
-          <h2 style={{ color: "unset" }}>Silakan Login !</h2>
+          <h2 style={{ color: "unset" }}>Silakan Masukan Email !</h2>
           <div className="form-style-5">
             <div className="my-2">
               <div className="form-floating">
@@ -112,37 +93,10 @@ const Login = () => {
                 </span>
               )}
             </div>
-            <div className="my-2">
-              <div className="form-floating">
-                <InputText
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={password}
-                  changeEvent={(val, e) =>
-                    changeInputHandler("password", val, e)
-                  }
-                />
-                <label htmlFor="password">Password</label>
-              </div>
-              {!passwordValidate && isFormSubmmit && (
-                <span className="text-danger">
-                  {GENERATE_ERROR_MESSAGE("Password Anda !", "valueMissing")}
-                </span>
-              )}
-            </div>
-
-            <span
-              className="theme-color text-end my-2"
-              style={{ float: 'right' }} 
-              onClick={() => handelNavigate("/forget-password")}
-            >
-              Lupa password ?
-            </span>
             <div className="my-2 text-center">
               <Button
                 className="btn-primary btn-block my-1"
-                label={isLoading ? "Memperoses...!!!" : "Masuk"}
+                label={isLoading ? "Memperoses...!!!" : "Kirim Email !"}
                 disabled={isLoading}
                 onClick={() => {
                   submitHandel();
@@ -153,9 +107,9 @@ const Login = () => {
               )}
               <Button
                 className="btn-default btn-block my-1"
-                label="Daftar Akun"
+                label="Kembali Login !"
                 onClick={() => {
-                  handelNavigate("/register");
+                  handelNavigate("/login");
                 }}
               />
             </div>
@@ -166,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgetPassword;
