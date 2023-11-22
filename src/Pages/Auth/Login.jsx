@@ -31,8 +31,8 @@ const Login = () => {
             Hallo !
           </h1>
           <h2 style={{ color: "unset" }}>Silakan Login !</h2>
-          <div class="form-style-5">
-            <div class="form-floating mb-3">
+          <div className="form-style-5">
+            <div className="form-floating mb-3">
               <InputText
                 type="email"
                 id="email"
@@ -40,9 +40,9 @@ const Login = () => {
                 value={email}
                 changeEvent={(val, e) => changeInputHandler("email", val, e)}
               />
-              <label for="email">Email </label>
+              <label htmlFor="email">Email </label>
             </div>
-            <div class="form-floating mb-4">
+            <div className="form-floating mb-4">
               <InputText
                 type="email"
                 id="password"
@@ -50,7 +50,7 @@ const Login = () => {
                 value={password}
                 changeEvent={(val, e) => changeInputHandler("password", val, e)}
               />
-              <label for="password">Password</label>
+              <label htmlFor="password">Password</label>
             </div>
 
             <span
@@ -71,7 +71,7 @@ const Login = () => {
                 className="btn-default btn-block my-1"
                 label="Daftar Akun"
                 onClick={() => {
-                  console.log("/register");
+                  handelNavigate("/register");
                 }}
               />
             </div>

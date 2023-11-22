@@ -1,4 +1,7 @@
 import React from 'react';
+import { signOut } from "firebase/auth"
+
+import { auth } from '../../firebase';
 
 export const FooterComponents = () => {
     return (
@@ -57,6 +60,19 @@ export const FooterComponents = () => {
                             <h5>Account</h5>
                         </div>
                     </a>
+                </li>
+                <li>
+                    <div 
+                        className="mobile-box"
+                        onClick={() => signOut(auth)}
+                    >
+                        <div className="mobile-icon">
+                            <i className="ri-user-3-line"></i>
+                        </div>
+                        <div className="mobile-name">
+                            <h5>Logout</h5>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>

@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { LayoutDefault } from "../Layout"; 
 
 import Login from "../Pages/Auth/Login";
+import Register from "../Pages/Auth/Register";
 
 import Home from "../Pages/Home";
 
@@ -45,9 +46,25 @@ const RoutesComponents = () => {
 
   return (
     <Routes>
-      <Route path="" element={RenderDefaultLayout(<Home dataLogin={currentUser} />, "Home", "/" )}/>
+      <Route path="" element={
+          <ProtectedRoute>
+            {RenderDefaultLayout(<Home dataLogin={currentUser} />, "Home", currentUser, "/" )}
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="login" element={<Login />}/>
+
+
+      <Route path="login" element={
+          <HasRoute>
+            <Login />
+          </HasRoute>
+      } />
+      <Route path="register" element={
+        <HasRoute>
+          <Register />
+        </HasRoute>
+      } />
     </Routes>
   );
 }
