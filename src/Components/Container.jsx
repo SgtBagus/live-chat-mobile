@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 export const Container = (
-    { className, children, title, link, linkName }
+    { className, children, title, link, linkName, style }
 ) => {
     const navigate = useNavigate();
     const handelNavigate = (path) => {
@@ -12,7 +12,7 @@ export const Container = (
     }
 
     return (
-        <section className={className}>
+        <section className={className} style={style}>
             <div className="custom-container">
                 {
                     title && (
@@ -46,6 +46,7 @@ Container.propTypes = {
     link: PropTypes.string,
     linkName: PropTypes.string,
     children: PropTypes.node,
+    style: PropTypes.shape({})
 };
 
 Container.defaultProps = {
@@ -54,6 +55,7 @@ Container.defaultProps = {
     link: null,
     linkName: null,
     children: null,
+    style: {},
 };
 
 export default Container;

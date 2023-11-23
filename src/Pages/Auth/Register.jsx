@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { NotificationManager } from 'react-notifications';
 
 import { auth, db } from "../../firebase";
 import { uploadFile } from "../../data/uploadFile";
@@ -27,7 +28,6 @@ const Register = () => {
         userNameValidate: false, userDescValidate: false, emailValidate: false,
         passwordValidate: false, rePasswordValidate: false, fileInputValidate: false,
     });
-    const [errorMessages, setErrorMessages] = useState(null);
 
     const navigate = useNavigate();
     const handelNavigate = (path) => {
@@ -68,7 +68,7 @@ const Register = () => {
             })
         } else {
             if (password !== rePassword) {
-                setErrorMessages('Pastikan Perulangan Password anda sama !');
+                NotificationManager.warning('Pastikan Perulangan Password anda sama !', 'Terjadi Kesalahan', 5000);
             } else {
                 await setIsLoading(true);
                 await handleSubmit();
@@ -101,7 +101,7 @@ const Register = () => {
             handelNavigate('/')
             await setIsLoading(false);
         } catch (err) {
-            setErrorMessages(catchError(err));
+            NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
             await setIsLoading(false);
         }
     }
@@ -237,13 +237,6 @@ const Register = () => {
                                     disabled={isLoading}
                                     onClick={() => { submitHandel(); }}
                                 />
-                                {
-                                    errorMessages && (
-                                        <span className="text-danger">
-                                            {errorMessages}
-                                        </span>
-                                    )
-                                }
                                 <Button
                                     className="btn-default btn-block my-1"
                                     label="Sudah Memiliki Akun !"

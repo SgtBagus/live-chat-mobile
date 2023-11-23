@@ -10,6 +10,8 @@ import ForgetPassword from  "../Pages/Auth/ForgetPassword";
 
 import Home from "../Pages/Home";
 import Account from "../Pages/Account";
+import Chat from "../Pages/Chat";
+
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -61,6 +63,15 @@ const RoutesComponents = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="chat" element={
+          <ProtectedRoute>
+            {RenderDefaultLayout(<Chat />, "Chat", "/chat" )}
+          </ProtectedRoute>
+        }
+      />
+
+
+      
 
 
 

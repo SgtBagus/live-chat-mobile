@@ -60,7 +60,7 @@ const Profile = () => {
                   <div className="profile-image border-bottom my-3">
                     <div className="sidebar-profile">
                       <div className="profile-image">
-                        <img src={photoURL} className="img-fluid h-100" alt="foto-account" style={{ objectFit: "cover" }} />
+                        <img src={photoURL} className="img-fluid" alt="foto-account" />
                       </div>
 
                       <div className="profile-name">

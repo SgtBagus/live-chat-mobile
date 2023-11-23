@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { sendPasswordResetEmail } from "firebase/auth";
+import { NotificationManager } from 'react-notifications';
 
 import { auth } from "../../firebase";
 
@@ -16,7 +17,6 @@ const ForgetPassword = () => {
   const [formValidate, setFormValidate] = useState({ emailValidate: false });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmmit, setIsFormSubmmit] = useState(false);
-  const [errorMessages, setErrorMessages] = useState(null);
 
   const navigate = useNavigate();
   const handelNavigate = (path) => {
@@ -55,14 +55,14 @@ const ForgetPassword = () => {
     try {
       await sendPasswordResetEmail(auth, email)
         .then(() => {
-          setErrorMessages("Email Sudah Terkirim di Inbox Anda !");
+          NotificationManager.warning("Email Sudah Terkirim di Inbox Anda !", 'Terjadi Kesalahan', 5000);
         })
         .catch((error) => {
           throw new Error(error);
         });
         await setIsLoading(false);
     } catch (err) {
-      setErrorMessages(catchError(err));
+      NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
       await setIsLoading(false);
     }
   };
@@ -102,9 +102,6 @@ const ForgetPassword = () => {
                   submitHandel();
                 }}
               />
-              {errorMessages && (
-                <span className="text-danger">{errorMessages}</span>
-              )}
               <Button
                 className="btn-default btn-block my-1"
                 label="Kembali Login !"

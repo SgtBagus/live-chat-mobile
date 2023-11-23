@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { NotificationManager } from 'react-notifications';
 
 import InputText from "../../Components/Form/InputText";
 import Button from "../../Components/Button";
@@ -20,7 +21,6 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmmit, setIsFormSubmmit] = useState(false);
-  const [errorMessages, setErrorMessages] = useState(null);
 
   const navigate = useNavigate();
   const handelNavigate = (path) => {
@@ -81,8 +81,8 @@ const Login = () => {
       }
       await setIsLoading(false);
     } catch (err) {
-        setErrorMessages(catchError(err));
-        await setIsLoading(false);
+      NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
+      await setIsLoading(false);
     }
   };
 
@@ -148,9 +148,6 @@ const Login = () => {
                   submitHandel();
                 }}
               />
-              {errorMessages && (
-                <span className="text-danger">{errorMessages}</span>
-              )}
               <Button
                 className="btn-default btn-block my-1"
                 label="Daftar Akun"

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import update from "immutability-helper";
 import { doc, updateDoc } from "firebase/firestore";
 import  { useNavigate } from 'react-router-dom'
+import { NotificationManager } from 'react-notifications';
 
 import { db } from "../../../firebase";
 
@@ -29,7 +30,6 @@ const FormAccount = ({
         userNameValidate: editName !== '',
         userDescValidate: editUserDesc !== '',
     });
-    const [errorMessages, setErrorMessages] = useState(null);
 
     const navigate = useNavigate();
     const handelNavigate = (path) => {
@@ -81,7 +81,7 @@ const FormAccount = ({
             handelNavigate('/account');
             await setIsLoading(false);
         } catch (err) {
-            setErrorMessages(catchError(err));
+            NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
             await setIsLoading(false);
         }
     };
@@ -136,9 +136,6 @@ const FormAccount = ({
                         disabled={isLoading}
                         onClick={() => { submitHandel() }}
                     />
-                    {errorMessages && (
-                        <span className="text-danger">{errorMessages}</span>
-                    )}
                 </div>
             </div>
         </>
