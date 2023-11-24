@@ -4,17 +4,17 @@ import {
 
 import { db } from "../../../firebase";
 
-export const SETUP_MESSAGES_NEW = async (adminData, currentData, combinedId) => {
+const SETUP_MESSAGES_NEW = async (adminData, currentData, combinedId, callback = () => {}) => {
     const {
         uid: adminUid, displayName: adminDisplayName, photoURL: adminPhotoURL,
     } = adminData;
     
     const {
-        uid: currentUid, displayName: currentDisplayName,photoURL: currentPhotoURL,
+        uid: currentUid, displayName: currentDisplayName, photoURL: currentPhotoURL,
     } = currentData;
   
-    await setDoc(doc(db, "chats", combinedId), { messages: [], allow_chat: false });
-  
+    await setDoc(doc(db, "chats", combinedId), { messages: [], allow_chat: true });
+    
     await updateDoc(doc(db, "userChats", currentUid), {
         [combinedId + ".userInfo"]: {
           uid: adminUid,
@@ -32,4 +32,8 @@ export const SETUP_MESSAGES_NEW = async (adminData, currentData, combinedId) => 
         },
         [combinedId + ".date"]: serverTimestamp(),
     });
+
+    callback();
 }
+
+export default SETUP_MESSAGES_NEW;

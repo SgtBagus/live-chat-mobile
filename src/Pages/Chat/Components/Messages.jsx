@@ -15,7 +15,7 @@ const Messages = () => {
     const [messages, setMessages] = useState([]);
 
     const { currentUser } = useContext(AuthContext);
-    const { data, dispatch } = useContext(ChatContext);
+    const { data: { chatId }, dispatch } = useContext(ChatContext);
 
     useEffect(() => {
         setIsLoading(true);
@@ -43,7 +43,7 @@ const Messages = () => {
         };
 
         const getMessate = () => {
-            const unsub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+            const unsub = onSnapshot(doc(db, "chats", chatId), (doc) => {
                 doc.exists() && setMessages(doc.data().messages);
         
                 setIsLoading(false);
@@ -53,21 +53,47 @@ const Messages = () => {
         }
 
         if (currentUser) { getFetchChats(); getMessate(); }
-    }, [currentUser, data.chatId, dispatch]);
+    }, [chatId, currentUser, dispatch]);
 
     return (
-        <div className="msger" style={{
-            overflow: 'hidden auto',
-            height: 'calc(100vh - 374px)',
-        }}>
+        <div
+            className="msger"
+            style={{
+                overflow: 'hidden auto',
+                height: 'calc(100vh - 374px)',
+            }}
+        >
             {
                 isLoading ? (
                     <Loading title="Memuat..." />
                 ) : (
                     <div className="msger-chat">
-                        {messages.map((m) => (
-                            <Message message={m} key={m.id} />
-                        ))}
+                        {
+                            chatId !== 'null'
+                            ? (
+                                <>
+                                    {
+                                        messages.map((m) => (
+                                            <Message message={m} key={m.id} />
+                                        ))
+                                    }
+                                </>
+                            )
+                            : (
+                                <div
+                                  className="msg right-msg mb-1"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    position: "relative",
+                                  }}
+                                >
+                                    <div className="msg-bubble w-100" style={{ borderRadius: '15px'}}>
+                                        Message nya masih Kosong, ayo mulai chat dengan admin !
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>
                 )
             }

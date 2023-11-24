@@ -95,7 +95,7 @@ const Register = () => {
                 photoURL: uploadImage,
                 is_admin: false,
             });
-            await setDoc(doc(db, "userChats", res.user.uid), {});
+
             await sendEmailVerificationEvent(res.user);
 
             handelNavigate('/')

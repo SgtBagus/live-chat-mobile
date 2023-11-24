@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import update from "immutability-helper";
 import { NotificationManager } from 'react-notifications';
 import {
-  arrayUnion, doc, serverTimestamp, Timestamp, updateDoc,
+  arrayUnion, doc, serverTimestamp, Timestamp, updateDoc, onSnapshot,
 } from "firebase/firestore";
 
 import { db } from "../../../firebase";
@@ -22,14 +22,36 @@ import { AuthContext } from "../../../context/AuthContext";
 import { checkThisFileIsImageOrNot } from "../../../Helper/checkFile";
 import { catchError } from "../../../Helper/helper";
 
-const ChatForm = () => {
+import SETUP_MESSAGES_NEW from "../config/data";
+
+const ChatForm = ({ dataAdmin }) => {
+    const { uid: adminUid } = dataAdmin;
+
     const [form, setForm] = useState({ file: null, text: "" });
+    const [allowChat, setAllowChat] = useState(true);
+
     const [onSend, setOnSend] = useState(false);
     
-    const { data } = useContext(ChatContext);
     const { currentUser } = useContext(AuthContext);
+    const { data } = useContext(ChatContext);
 
     const { text, file } = form;
+    
+    useEffect(() => {
+        const unSub = onSnapshot(
+            doc(db, "chats", data.chatId), (doc) => {
+                if (doc.exists()) {
+                    setAllowChat(doc.data().allow_chat);
+                }
+            }
+        );
+    
+        return () => {
+            data.chatId !== 'null' && unSub();
+        };
+    }, [data.chatId]);
+
+
     const changeInputHandler = async (type, val) => {
         const newForm = update(form, {
             [type]: { $set: val },
@@ -52,9 +74,21 @@ const ChatForm = () => {
         setForm({ file: null, text });
     }
 
-    const sumbitMessage = async () => {
+    const sumbitMessage = () => {
         setOnSend(true);
 
+        if (data.chatId !== 'null') {
+            sendMessate(data.chatId);
+        } else {
+            const combinedId = currentUser.uid > data ? currentUser.uid + adminUid : adminUid + currentUser.uid || null;
+
+            SETUP_MESSAGES_NEW(dataAdmin, currentUser, combinedId, async () => {
+                sendMessate(combinedId);
+            });
+        }
+    }
+
+    const sendMessate = async (dataChatId) => {
         try {
             if (file) {
                 const thisFileisImage = checkThisFileIsImageOrNot(file);
@@ -62,7 +96,7 @@ const ChatForm = () => {
 
                 const uploadImage = await uploadFile(file, 'message/images/');
                 
-                await updateDoc(doc(db, "chats", data.chatId), {
+                await updateDoc(doc(db, "chats", dataChatId), {
                     messages: arrayUnion({
                         id: uuid(),
                         text,
@@ -72,7 +106,7 @@ const ChatForm = () => {
                     }),
                 });
             } else {
-                await updateDoc(doc(db, "chats", data.chatId), {
+                await updateDoc(doc(db, "chats", dataChatId), {
                     messages: arrayUnion({
                         id: uuid(),
                         text,
@@ -88,24 +122,24 @@ const ChatForm = () => {
             }
           
             await updateDoc(doc(db, "userChats", currentUser.uid), {
-                [data.chatId + ".lastMessage"]: {
+                [dataChatId + ".lastMessage"]: {
                     text: lastMessageText,
                 },
-                [data.chatId + ".date"]: serverTimestamp(),
+                [dataChatId + ".date"]: serverTimestamp(),
             });
         
-            await updateDoc(doc(db, "userChats", data.user.uid), {
-                [data.chatId + ".lastMessage"]: {
+            await updateDoc(doc(db, "userChats", adminUid), {
+                [dataChatId + ".lastMessage"]: {
                     text: lastMessageText,
                 },
-                [data.chatId + ".date"]: serverTimestamp(),
+                [dataChatId + ".date"]: serverTimestamp(),
             });
             
             setForm({ file: null, text: "" })
         } catch (err) {
             NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
         } finally {
-            await setOnSend(false);
+            setOnSend(false);
         }
     }
 
@@ -152,6 +186,7 @@ const ChatForm = () => {
                                 type="file"
                                 id="file"
                                 accept="image/png, image/jpeg, image/jpg"
+                                name="file"
                                 onChange={(e) => {
                                     try {
                                         checkImage(e);
@@ -197,7 +232,7 @@ const ChatForm = () => {
                     placeholder="Enter your message..."
                     value={text}
                     onChange={e => changeInputHandler('text', e.target.value)}
-                    disabled={onSend}
+                    disabled={onSend || !allowChat}
                 />
                 <button
                     type="submit"

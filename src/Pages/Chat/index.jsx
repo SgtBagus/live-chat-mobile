@@ -81,7 +81,7 @@ const Chat = () => {
                                 }}
                             >
                                 <Messages />
-                                <ChatForm />
+                                <ChatForm dataAdmin={dataAdmin} />
                             </div>
                         </Container>
                     </>
