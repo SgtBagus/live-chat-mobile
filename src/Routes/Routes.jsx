@@ -8,6 +8,8 @@ import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import ForgetPassword from  "../Pages/Auth/ForgetPassword";
 
+import Page404 from "../Layout/Page404";
+
 import Home from "../Pages/Home";
 import Account from "../Pages/Account";
 import Chat from "../Pages/Chat";
@@ -51,19 +53,25 @@ const RoutesComponents = () => {
 
   return (
     <Routes>
-      <Route path="" element={
+      <Route
+        path=""
+        element={
           <ProtectedRoute>
             {RenderDefaultLayout(<Home />, "Home", "/" )}
           </ProtectedRoute>
         }
       />
-      <Route path="account" element={
+      <Route
+        path="account"
+        element={
           <ProtectedRoute>
             {RenderDefaultLayout(<Account />, "Profil", "/account" )}
           </ProtectedRoute>
         }
       />
-      <Route path="chat" element={
+      <Route
+        path="chat"
+        element={
           <ProtectedRoute>
             {RenderDefaultLayout(<Chat />, "Chat", "/chat" )}
           </ProtectedRoute>
@@ -71,30 +79,43 @@ const RoutesComponents = () => {
       />
 
 
-      
+
+      <Route path="*" element={<Page404 />} />
 
 
 
-      <Route path="AuthLogin" element={
+      <Route
+        path="AuthLogin"
+        element={
         <HasRoute>
           <AuthLogin />
         </HasRoute>
-      } />
-      <Route path="login" element={
+        }
+      />
+      <Route
+        path="login"
+        element={
           <HasRoute>
             <Login />
           </HasRoute>
-      } />
-      <Route path="register" element={
-        <HasRoute>
-          <Register />
-        </HasRoute>
-      } />
-      <Route path="forget-password" element={
-        <HasRoute>
-          <ForgetPassword />
-        </HasRoute>
-      } />
+        }
+      />
+      <Route
+        path="register"
+        element={
+          <HasRoute>
+            <Register />
+          </HasRoute>
+        }
+      />
+      <Route
+        path="forget-password"
+        element={
+          <HasRoute>
+            <ForgetPassword />
+          </HasRoute>
+        }
+      />
     </Routes>
   );
 }
