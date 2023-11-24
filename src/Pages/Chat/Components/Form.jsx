@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { v4 as uuid } from "uuid";
 import update from "immutability-helper";
 import { NotificationManager } from 'react-notifications';
+import {
+  arrayUnion, doc, serverTimestamp, Timestamp, updateDoc,
+} from "firebase/firestore";
 
+import { db } from "../../../firebase";
 
 import Modals from "../../../Components/Modal";
 import Container from "../../../Components/Container";
@@ -9,11 +14,21 @@ import InputText from "../../../Components/Form/InputText";
 
 import { DEFAULT_IMAGE } from "../../../Components/DefaultValue/config";
 
+import { uploadFile } from "../../../data/uploadFile";
+
+import { ChatContext } from "../../../context/ChatContext";
+import { AuthContext } from "../../../context/AuthContext";
+
 import { checkThisFileIsImageOrNot } from "../../../Helper/checkFile";
+import { catchError } from "../../../Helper/helper";
 
 const ChatForm = () => {
     const [form, setForm] = useState({ file: null, text: "" });
+    const [onSend, setOnSend] = useState(false);
     
+    const { data } = useContext(ChatContext);
+    const { currentUser } = useContext(AuthContext);
+
     const { text, file } = form;
     const changeInputHandler = async (type, val) => {
         const newForm = update(form, {
@@ -37,9 +52,61 @@ const ChatForm = () => {
         setForm({ file: null, text });
     }
 
-    const sumbitMessage = () => {
-        console.log(file);
-        console.log(text);
+    const sumbitMessage = async () => {
+        setOnSend(true);
+
+        try {
+            if (file) {
+                const thisFileisImage = checkThisFileIsImageOrNot(file);
+                if (!thisFileisImage) throw new Error ('Hanya Boleh Mengupload Gambar');
+
+                const uploadImage = await uploadFile(file, 'message/images/');
+                
+                await updateDoc(doc(db, "chats", data.chatId), {
+                    messages: arrayUnion({
+                        id: uuid(),
+                        text,
+                        senderId: currentUser.uid,
+                        date: Timestamp.now(),
+                        img: uploadImage,
+                    }),
+                });
+            } else {
+                await updateDoc(doc(db, "chats", data.chatId), {
+                    messages: arrayUnion({
+                        id: uuid(),
+                        text,
+                        senderId: currentUser.uid,
+                        date: Timestamp.now(),
+                    }),
+                });
+            }
+
+            let lastMessageText = text;
+            if (file && text === '') {
+                lastMessageText = checkThisFileIsImageOrNot(file) ? 'Mengkirimkan Gambar' : 'Mengikirimkan Video';
+            }
+          
+            await updateDoc(doc(db, "userChats", currentUser.uid), {
+                [data.chatId + ".lastMessage"]: {
+                    text: lastMessageText,
+                },
+                [data.chatId + ".date"]: serverTimestamp(),
+            });
+        
+            await updateDoc(doc(db, "userChats", data.user.uid), {
+                [data.chatId + ".lastMessage"]: {
+                    text: lastMessageText,
+                },
+                [data.chatId + ".date"]: serverTimestamp(),
+            });
+            
+            setForm({ file: null, text: "" })
+        } catch (err) {
+            NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
+        } finally {
+            await setOnSend(false);
+        }
     }
 
     return (
@@ -68,8 +135,11 @@ const ChatForm = () => {
                     modalButtonApply="Kirim"
                     modalButtonCancelOnClick={() => cancelUploadImage()}
                     modalButtonApplyOnClick={() => sumbitMessage()}
+                    disabled={onSend}
+                    modalButtonCalcelDisabled={onSend}
+                    modalButtonApplyDisabled={onSend}
                 >
-                    <Container className="price-range-section">
+                    <Container style={{ maxHeight: '490px', overflow: 'auto' }}>
                         <img
                             src={file ? URL.createObjectURL(file) : DEFAULT_IMAGE}
                             className="img-fluid rounded"
@@ -127,14 +197,24 @@ const ChatForm = () => {
                     placeholder="Enter your message..."
                     value={text}
                     onChange={e => changeInputHandler('text', e.target.value)}
+                    disabled={onSend}
                 />
                 <button
                     type="submit"
                     className="msger-send-btn"
                     style={{ right: "28px" }}
                     onClick={()=> sumbitMessage()}
+                    disabled={onSend || (( text === '') && (file === null) )}
                 >
-                    <i className="ri-send-plane-2-line" />
+                    {
+                        onSend
+                        ? (
+                            <i className="fas fa-sync-alt fa-spin" />
+                        )
+                        : (
+                            <i className="ri-send-plane-2-line" />
+                        )
+                    }
                 </button>
             </form>
         </>

@@ -6,7 +6,8 @@ const Modals = (
         className, style, target, icon,
         modalHeight, modalTitle, children,
         modalButtonCancel, modalButtonApply,
-        modalButtonCancelOnClick, modalButtonApplyOnClick,       
+        modalButtonCancelOnClick, modalButtonApplyOnClick,
+        modalButtonCalcelDisabled, modalButtonApplyDisabled, disabled, 
     }
 ) => {
     return (
@@ -17,6 +18,7 @@ const Modals = (
                 style={style}
                 data-bs-toggle="offcanvas"
                 data-bs-target={`#${target}`}
+                disabled={disabled}
             >
                 <i className={icon} />
             </button>
@@ -45,6 +47,7 @@ const Modals = (
                             className="btn"
                             data-bs-dismiss="offcanvas"
                             onClick={modalButtonCancelOnClick}
+                            disabled={modalButtonCalcelDisabled}
                         >
                             {modalButtonCancel}
                         </button>
@@ -53,6 +56,7 @@ const Modals = (
                             className="btn btn-gradient theme-bg-color"
                             data-bs-dismiss="offcanvas"
                             onClick={modalButtonApplyOnClick}
+                            disabled={modalButtonApplyDisabled}
                         >
                             {modalButtonApply}
                         </button>
@@ -76,7 +80,10 @@ Modals.propTypes = {
     modalButtonCancel: PropTypes.string,
     modalButtonApply: PropTypes.string,
     modalButtonCancelOnClick: PropTypes.func,
-    modalButtonApplyOnClick: PropTypes.func,       
+    modalButtonApplyOnClick: PropTypes.func,
+    disabled: PropTypes.bool, 
+    modalButtonCalcelDisabled: PropTypes.bool, 
+    modalButtonApplyDisabled: PropTypes.bool, 
 };
 
 Modals.defaultProps = {
@@ -93,6 +100,9 @@ Modals.defaultProps = {
     modalButtonApply: 'Apply',
     modalButtonCancelOnClick: () => {},
     modalButtonApplyOnClick: () => {}, 
+    disabled: false,
+    modalButtonCalcelDisabled: false,
+    modalButtonApplyDisabled: false,
 };
 
 export default Modals;

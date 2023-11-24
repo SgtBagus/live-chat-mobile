@@ -1,18 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  doc, onSnapshot, where, collection, query,
+} from "firebase/firestore";
 import { signOut } from "firebase/auth"
+import { NotificationManager } from "react-notifications";
 
 import { auth, db } from "../../firebase";
 
 import { AuthContext } from "../../context/AuthContext";
 
-import Container from "../../Components/Container";
-import { DEFAULT_IMAGE } from "../../Components/DefaultValue/config";
 import FormAccount from "./Components/FormAccount";
+import Container from "../../Components/Container";
+import Loading from "../../Components/Loading";
+
+import { DEFAULT_IMAGE } from "../../Components/DefaultValue/config";
+
+import { catchError } from "../../Helper/helper";
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMEssage] = useState(null);
 
   const [dataUser, setDataUser] = useState({
       displayName: 'Username',
@@ -20,6 +26,12 @@ const Profile = () => {
       email: 'useremail@gmail.com',
       userDesc: 'Desc',
   });
+  const [adminUid, setAdminUid] = useState({
+    displayName: 'Username',
+    photoURL: DEFAULT_IMAGE,
+    email: 'useremail@gmail.com',
+    userDesc: 'Desc',
+});
 
   const { currentUser } = useContext(AuthContext);
   const { displayName, photoURL, email, userDesc } = dataUser;
@@ -27,14 +39,24 @@ const Profile = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    const unSub = () => {
+    const unSub = async () => {
       onSnapshot(doc(db, "users", currentUser.uid), async (doc) => {
         if (doc.exists()) {
             await setDataUser(doc.data());
-            setIsLoading(false);
         } else {
-          setErrorMEssage('Gagal Mengambil Data Pengguna');
+          NotificationManager.warning('Gagal Mengambil Data Pengguna', 'Terjadi Kesalahan', 5000);
         }
+      });
+
+      const res = await query(collection(db, "users"), where("is_admin", "==", true));
+      await onSnapshot(res, async (data) => {
+          data.forEach((doc) => {
+            setAdminUid(doc.data());
+          });
+
+          setIsLoading(false);
+      }, (error) => {
+          NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
       });
     };
 
@@ -49,11 +71,7 @@ const Profile = () => {
             {
               isLoading
               ? (
-                <div className="text-center">
-                  <span className="h1 h-100">
-                    {errorMessage ? errorMessage : 'Memuat Data......!'}
-                  </span>
-                </div>
+                <Loading title="Memuat..." />
               )
               : (
                 <>
@@ -75,6 +93,7 @@ const Profile = () => {
 
                   <FormAccount
                     dataUser={dataUser}
+                    adminUid={adminUid}
                   />
                 </>
               )

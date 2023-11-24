@@ -18,6 +18,13 @@ const FormAccount = ({
         uid: editUid, 
         displayName: editName,
         userDesc: editUserDesc,
+        photoURL: editPhoto,
+    },
+    adminUid: {
+        uid: adminUid, 
+        displayName: adminName,
+        userDesc: adminUserDesc,
+        photoURL: adminPhoto,
     }
 }) => {
     const [form, setForm] = useState({
@@ -78,7 +85,26 @@ const FormAccount = ({
                 displayName: userName, userDesc,
             });
 
+            const combinedId = editUid > adminUid ? editUid + adminUid : adminUid + editUid || null;
+
+            await updateDoc(doc(db, "userChats", editUid), {
+                [combinedId + ".userInfo"]: {
+                  uid: adminUid,
+                  displayName: adminName,
+                  photoURL: adminPhoto,
+                },
+            });
+          
+            await updateDoc(doc(db, "userChats", adminUid), {
+                [combinedId + ".userInfo"]: {
+                  uid: editUid,
+                  displayName: userName,
+                  photoURL: editPhoto,
+                },
+            });
+
             handelNavigate('/account');
+
             await setIsLoading(false);
         } catch (err) {
             NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
