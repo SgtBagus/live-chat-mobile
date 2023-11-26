@@ -1,5 +1,6 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useContext } from "react";
+
+import { LoadingContext } from "../../context/LoadingContext";
 
 import Container from "../../Components/Container";
 import CategoryList from "../../Components/CategoryList";
@@ -9,10 +10,12 @@ import FastSolusion from "./Components/FastSolusion";
 import Button from "../../Components/Button";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const handelNavigate = (path) => {
-    return navigate(path);
-  };
+  const { dispatchLoading } = useContext(LoadingContext);
+
+  useEffect(() => {
+    dispatchLoading(true);
+    dispatchLoading(false);
+  }, [dispatchLoading]);
 
   return (
     <>

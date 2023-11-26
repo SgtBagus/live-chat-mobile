@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import update from "immutability-helper";
 import { doc, updateDoc } from "firebase/firestore";
 import  { useNavigate } from 'react-router-dom'
@@ -23,16 +23,12 @@ const FormAccount = ({
     adminUid: {
         uid: adminUid, 
         displayName: adminName,
-        userDesc: adminUserDesc,
         photoURL: adminPhoto,
     }
 }) => {
-    const [form, setForm] = useState({
-        userName: editName,
-        userDesc: editUserDesc,
-    });
     const [isLoading, setIsLoading] = useState(false);
     const [isFormSubmmit, setIsFormSubmmit] = useState(false);
+    const [form, setForm] = useState({ userName: '', userDesc: '' });
     const [formValidate, setFormValidate] = useState({
         userNameValidate: editName !== '',
         userDescValidate: editUserDesc !== '',
@@ -48,6 +44,10 @@ const FormAccount = ({
         userNameValidate,
         userDescValidate,
     } = formValidate;
+
+    useEffect(() => {
+        setForm({ userName: editName, userDesc: editUserDesc });
+    }, [editName, editUserDesc])
 
     const changeInputHandler = async (type, val, e) => {
         const newForm = update(form, {
