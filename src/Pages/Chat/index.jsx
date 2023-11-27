@@ -46,39 +46,52 @@ const Chat = () => {
     }, [currentUser, dispatchLoading]);
 
     return (
-      <ChatContextProvider>
-        <Container className="chatting-header prfile-header">
-          <div className="custom-container">
-            <div className="header-box">
-              <div className="header-profile">
-                <div className="profile-image">
-                  <img src={photoURL} className="img-fluid" alt="" />
-                </div>
-                <div className="name-content">
-                  <h1>{displayName}</h1>
-                  <h5>{userDesc}</h5>
-                </div>
+      <>
+        {currentUser && !currentUser.emailVerified ? (
+          <Container className="chatting-header prfile-header">
+            <div className="custom-container">
+              <div className="header-box w-100 text-center d-flex flex-column">
+                <h1 className="mb-2">Verifikasi Email Anda !</h1>
+                <h5>Mohon Lakukan Verifikasi Email terlebih dahulu, agar dapat menggukan semua Feature Kami !</h5>
               </div>
             </div>
-          </div>
-        </Container>
+          </Container>
+        ) : (
+          <ChatContextProvider>
+            <Container className="chatting-header prfile-header">
+              <div className="custom-container">
+                <div className="header-box">
+                  <div className="header-profile">
+                    <div className="profile-image">
+                      <img src={photoURL} className="img-fluid" alt="" />
+                    </div>
+                    <div className="name-content">
+                      <h1>{displayName}</h1>
+                      <h5>{userDesc}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Container>
 
-        <Container className="p-2">
-          <div
-            className="message-box p-3"
-            style={{
-              backgroundColor: "darkgrey",
-              position: "relative",
-              height: "calc(100vh - 272px)",
-              borderRadius: "20px",
-              overflow: "unset",
-            }}
-          >
-            <Messages />
-            <ChatForm dataAdmin={dataAdmin} />
-          </div>
-        </Container>
-      </ChatContextProvider>
+            <Container className="p-2">
+              <div
+                className="message-box p-3"
+                style={{
+                  backgroundColor: "darkgrey",
+                  position: "relative",
+                  height: "calc(100vh - 272px)",
+                  borderRadius: "20px",
+                  overflow: "unset",
+                }}
+              >
+                <Messages />
+                <ChatForm dataAdmin={dataAdmin} />
+              </div>
+            </Container>
+          </ChatContextProvider>
+        )}
+      </>
     );
 };
 

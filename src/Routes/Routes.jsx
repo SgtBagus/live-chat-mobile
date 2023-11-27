@@ -18,11 +18,8 @@ import Chat from "../Pages/Chat";
 import { AuthContext } from "../context/AuthContext";
 
 
-const RenderDefaultLayout = (pageComponents, pageName, path) => (
-  <LayoutDefault
-    pageName={pageName}
-    path={path}
-  >
+const RenderDefaultLayout = (pageComponents, path) => (
+  <LayoutDefault path={path} >
     {pageComponents}
   </LayoutDefault>
 )
@@ -57,7 +54,7 @@ const RoutesComponents = () => {
         path=""
         element={
           <ProtectedRoute>
-            {RenderDefaultLayout(<Home />, "Home", "/" )}
+            {RenderDefaultLayout(<Home />, "/" )}
           </ProtectedRoute>
         }
       />
@@ -65,7 +62,7 @@ const RoutesComponents = () => {
         path="account"
         element={
           <ProtectedRoute>
-            {RenderDefaultLayout(<Account />, "Profil", "/account" )}
+            {RenderDefaultLayout(<Account />, "/account" )}
           </ProtectedRoute>
         }
       />
@@ -73,7 +70,7 @@ const RoutesComponents = () => {
         path="chat"
         element={
           <ProtectedRoute>
-            {RenderDefaultLayout(<Chat />, "Chat", "/chat" )}
+            {RenderDefaultLayout(<Chat />, "/chat" )}
           </ProtectedRoute>
         }
       />
