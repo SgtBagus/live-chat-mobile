@@ -1,10 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { NotificationManager } from 'react-notifications';
-import {
-    onSnapshot, where, collection, query,
-} from "firebase/firestore";
-
-import { db } from "../../firebase";
+import React, { useContext, useEffect } from "react";
 
 import { ChatContextProvider } from "../../context/ChatContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -15,35 +9,21 @@ import Messages from "./Components/Messages";
 
 import Container from "../../Components/Container";
 
-import { DEFAULT_IMAGE } from "../../Components/DefaultValue/config";
-
-import { catchError } from "../../Helper/helper";
-
 const Chat = () => {
-    const [dataAdmin, setDataAdmin] = useState({
-        displayName: 'Username', photoURL: DEFAULT_IMAGE, userDesc: 'Desc',
-    });
-
-    const { displayName, photoURL, userDesc } = dataAdmin;
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, dataAdmin } = useContext(AuthContext);
     const { dispatchLoading } = useContext(LoadingContext);
 
-    useEffect(() => {
-        dispatchLoading(true);
-        const unSub = async () => {
-            const res = await query(collection(db, "users"), where("is_admin", "==", true));
-            await onSnapshot(res, async (data) => {
-                data.forEach((doc) => {
-                    setDataAdmin(doc.data());
-                });
-                dispatchLoading(false);
-            }, (error) => {
-                NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
-            });
-        };
+    const { uid, displayName, photoURL, userDesc } = dataAdmin;
 
-        return () => { currentUser && unSub() };
-    }, [currentUser, dispatchLoading]);
+    useEffect(() => {
+      return () => {
+        if (uid) {
+          dispatchLoading(false);
+        } else {
+          dispatchLoading(true);
+        }
+      };
+    }, [dispatchLoading, uid]);
 
     return (
       <>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -18,6 +18,8 @@ import { DEFAULT_IMAGE } from "../../Components/DefaultValue/config";
 import { catchError, validateEmail } from "../../Helper/helper";
 import { GENERATE_ERROR_MESSAGE } from "../../Helper/error";
 
+import { LoadingContext } from "../../context/LoadingContext";
+
 const Register = () => {
     const [form, setForm] = useState({
         userName: "", userDesc: "", email: "", password: "", rePassword: "", fileInput: null,
@@ -27,6 +29,12 @@ const Register = () => {
     const [formValidate, setFormValidate] = useState({
         userNameValidate: false, userDescValidate: false, emailValidate: false,
         passwordValidate: false, rePasswordValidate: false, fileInputValidate: false,
+    });
+  
+    const { dispatchLoading } = useContext(LoadingContext);
+  
+    useEffect(() => {
+        dispatchLoading(false);
     });
 
     const navigate = useNavigate();

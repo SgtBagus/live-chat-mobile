@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { DEFAULT_IMAGE_MOBILE } from "../../Components/DefaultValue/config";
 
+import { LoadingContext } from "../../context/LoadingContext";
+
 
 const AuthLogin = () => {
+    const { dispatchLoading } = useContext(LoadingContext);
+
+    useEffect(() => {
+        dispatchLoading(false);
+    });
+
     const navigate = useNavigate();
     const handelNavigate = (path) => {
         return navigate(path);

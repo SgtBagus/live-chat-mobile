@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { sendPasswordResetEmail } from "firebase/auth";
@@ -12,11 +12,19 @@ import Button from "../../Components/Button";
 import { catchError, validateEmail } from "../../Helper/helper";
 import { GENERATE_ERROR_MESSAGE } from "../../Helper/error";
 
+import { LoadingContext } from "../../context/LoadingContext";
+
 const ForgetPassword = () => {
   const [form, setForm] = useState({ email: "" });
   const [formValidate, setFormValidate] = useState({ emailValidate: false });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmmit, setIsFormSubmmit] = useState(false);
+  
+  const { dispatchLoading } = useContext(LoadingContext);
+
+  useEffect(() => {
+      dispatchLoading(false);
+  });
 
   const navigate = useNavigate();
   const handelNavigate = (path) => {

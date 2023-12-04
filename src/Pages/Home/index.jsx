@@ -13,7 +13,6 @@ const Home = () => {
   const { dispatchLoading } = useContext(LoadingContext);
 
   useEffect(() => {
-    dispatchLoading(true);
     dispatchLoading(false);
   }, [dispatchLoading]);
 

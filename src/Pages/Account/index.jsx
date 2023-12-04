@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { doc, onSnapshot, where, collection, query } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { NotificationManager } from "react-notifications";
 
@@ -22,59 +22,33 @@ const Profile = () => {
     email: "useremail@gmail.com",
     userDesc: "Desc",
   });
-  const [adminUid, setAdminUid] = useState({
-    displayName: "Username",
-    photoURL: DEFAULT_IMAGE,
-    email: "useremail@gmail.com",
-  });
 
   const { dispatchLoading } = useContext(LoadingContext);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser: { uid }, dataAdmin } = useContext(AuthContext);
   const { displayName, photoURL, email, userDesc } = dataUser;
 
   useEffect(() => {
     dispatchLoading(true);
-
-    const unSub = async () => {
-      onSnapshot(doc(db, "users", currentUser.uid), async (doc) => {
-        if (doc.exists()) {
-          await setDataUser(doc.data());
-        } else {
-          NotificationManager.warning(
-            "Gagal Mengambil Data Pengguna",
-            "Terjadi Kesalahan",
-            5000
-          );
-        }
+  
+    const res = query(collection(db, "users"), where("uid", "==", uid));
+    const GetDataUser = onSnapshot(res, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        setDataUser(doc.data());
       });
 
-      const res = await query(
-        collection(db, "users"),
-        where("is_admin", "==", true)
-      );
-      await onSnapshot(
-        res,
-        async (data) => {
-          data.forEach((doc) => {
-            setAdminUid(doc.data());
-          });
+      dispatchLoading(false);
+    }, (error) => {
+      NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
+    });
 
-          dispatchLoading(false);
-        },
-        (error) => {
-          NotificationManager.warning(
-            catchError(error),
-            "Terjadi Kesalahan",
-            5000
-          );
-        }
-      );
+    return () => { 
+      if (uid) {
+        GetDataUser();
+      } else {
+        dispatchLoading(true);
+      }
     };
-
-    return () => {
-      currentUser && unSub();
-    };
-  }, [currentUser, dispatchLoading]);
+  }, [dispatchLoading, uid]);
 
   return (
     <>
@@ -99,7 +73,7 @@ const Profile = () => {
               </div>
             </div>
 
-            <FormAccount dataUser={dataUser} adminUid={adminUid} />
+            <FormAccount dataUser={dataUser} dataAdmin={dataAdmin} />
 
             <div
               href="sign-in.html"

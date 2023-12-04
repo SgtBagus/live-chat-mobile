@@ -14,7 +14,6 @@ import Home from "../Pages/Home";
 import Account from "../Pages/Account";
 import Chat from "../Pages/Chat";
 
-
 import { AuthContext } from "../context/AuthContext";
 
 
@@ -28,7 +27,6 @@ const RoutesComponents = () => {
   const { currentUser, isLoading } = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
-
     if (!isLoading) {
       if (!currentUser) {
         return <Navigate to="/AuthLogin" />;

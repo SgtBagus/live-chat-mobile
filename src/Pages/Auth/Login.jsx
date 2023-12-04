@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -13,6 +13,8 @@ import { auth, db } from "../../firebase";
 import { catchError, validateEmail } from "../../Helper/helper";
 import { GENERATE_ERROR_MESSAGE } from "../../Helper/error";
 
+import { LoadingContext } from "../../context/LoadingContext";
+
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [formValidate, setFormValidate] = useState({
@@ -21,6 +23,12 @@ const Login = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmmit, setIsFormSubmmit] = useState(false);
+  
+  const { dispatchLoading } = useContext(LoadingContext);
+
+  useEffect(() => {
+      dispatchLoading(false);
+  });
 
   const navigate = useNavigate();
   const handelNavigate = (path) => {

@@ -20,7 +20,7 @@ const FormAccount = ({
         userDesc: editUserDesc,
         photoURL: editPhoto,
     },
-    adminUid: {
+    dataAdmin: {
         uid: adminUid, 
         displayName: adminName,
         photoURL: adminPhoto,

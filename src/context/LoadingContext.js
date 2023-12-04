@@ -5,10 +5,10 @@ export const LoadingContext = createContext();
 export const LoadingContextProvider = ({ children }) => {
 
   const changeLoading = (isLoading, action) => {
-    if (action === false) {
-      document.querySelector("body").classList.add("loaded");
-    } else {
+    if (action) {
       document.querySelector("body").classList.remove("loaded");
+    } else {
+      document.querySelector("body").classList.add("loaded");
     }
 
     return action;
