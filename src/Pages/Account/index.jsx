@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { NotificationManager } from "react-notifications";
+import { useNavigate } from "react-router-dom";
 
 import { auth, db } from "../../firebase";
 
@@ -16,6 +17,8 @@ import { DEFAULT_IMAGE } from "../../Components/DefaultValue/config";
 import { catchError } from "../../Helper/helper";
 
 const Profile = () => {
+  const navigate = useNavigate();
+
   const [dataUser, setDataUser] = useState({
     displayName: "Username",
     photoURL: DEFAULT_IMAGE,
@@ -50,6 +53,11 @@ const Profile = () => {
     };
   }, [dispatchLoading, uid]);
 
+  const singOutHandel = () => {
+    signOut(auth);
+    return navigate("/login");
+  }
+
   return (
     <>
       <Container>
@@ -78,7 +86,7 @@ const Profile = () => {
             <div
               href="sign-in.html"
               className="btn ecommerce-btn theme-border mt-4"
-              onClick={() => signOut(auth)}
+              onClick={() => singOutHandel()}
             >
               Logout
             </div>

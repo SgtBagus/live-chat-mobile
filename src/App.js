@@ -1,5 +1,5 @@
 import React, { StrictMode } from "react";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { NotificationContainer } from 'react-notifications';
 
 import Routes from './Routes/Routes';
@@ -14,11 +14,11 @@ function App() {
     <LoadingContextProvider>
       <AuthContextProvider>
         <StrictMode>
-          <HashRouter>
+          <BrowserRouter basename="/">
             <Routes />
 
             <NotificationContainer />
-          </HashRouter>
+          </BrowserRouter>
         </StrictMode>
       </AuthContextProvider>
     </LoadingContextProvider>

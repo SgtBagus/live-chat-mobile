@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from "react";
 
 import { LoadingContext } from "../../context/LoadingContext";
+import { AuthContext } from "../../context/AuthContext";
 
 import Container from "../../Components/Container";
 import CategoryList from "../../Components/CategoryList";
@@ -11,10 +12,15 @@ import Button from "../../Components/Button";
 
 const Home = () => {
   const { dispatchLoading } = useContext(LoadingContext);
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    dispatchLoading(false);
-  }, [dispatchLoading]);
+    dispatchLoading(true);
+
+    if (currentUser) {
+      dispatchLoading(false);
+    }
+  }, [currentUser, dispatchLoading]);
 
   return (
     <>

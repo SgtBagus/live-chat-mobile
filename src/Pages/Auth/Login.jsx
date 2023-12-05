@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import update from "immutability-helper";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { NotificationManager } from 'react-notifications';
 
 import InputText from "../../Components/Form/InputText";
@@ -71,23 +71,36 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const data = await query(collection(db, "users"), where("email", "==", email));
-      const userData = await getDocs(data);
-      const findData = userData.docs.map(doc => doc.data())[0];
-      if (!findData) throw new Error('Email Belum Terdaftar');
-
-      const { is_admin: isAdmin, email: loginEmail } = findData;
-
-      if (!isAdmin) {
-          await signInWithEmailAndPassword(auth, loginEmail, password).then(() => {
-              handelNavigate("/")
-          }).catch((err) => {
-              throw new Error('Email dan Password Anda Salah')
+      const res = query(collection(db, "users"), where("email", "==", email));
+      onSnapshot(res, (querySnapshot) => {
+        const { empty } = querySnapshot;
+        if (!empty) {
+          let isAdmin = false, loginEmail = '';
+          querySnapshot.docs.forEach((x) => {
+            const { email, is_admin } = x.data();
+            isAdmin = is_admin;
+            loginEmail = email;
           });
-      } else {
-          throw new Error('Tidak Memiliki Akses');
-      }
-      await setIsLoading(false);
+
+          if (!isAdmin) {
+            signInWithEmailAndPassword(auth, loginEmail, password).then(() => {
+              handelNavigate("/");
+            }).catch(() => {
+              NotificationManager.warning('Password Anda Salah', 'Terjadi Kesalahan', 5000);
+              setIsLoading(false);
+            });
+          } else {
+            NotificationManager.warning('Tidak Memiliki Akses', 'Terjadi Kesalahan', 5000);
+            setIsLoading(false);
+          }
+        } else {
+          NotificationManager.warning('Email Belum Terdaftar', 'Terjadi Kesalahan', 5000);
+          setIsLoading(false);
+        }
+      }, (error) => {
+        NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
+        setIsLoading(false);
+      });
     } catch (err) {
       NotificationManager.warning(catchError(err), 'Terjadi Kesalahan', 5000);
       await setIsLoading(false);

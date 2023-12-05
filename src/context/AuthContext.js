@@ -7,24 +7,13 @@ import { auth, db } from "../firebase";
 
 import { catchError } from "../Helper/helper";
 
-import { DEFAULT_IMAGE } from "../Components/DefaultValue/config";
-
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({
-    uid: null, 
-    displayName: null,
-    userDesc: null,
-    photoURL: DEFAULT_IMAGE,
-  });
-  const [dataAdmin, setDataAdmin] = useState({
-    uid: null, 
-    displayName: null,
-    photoURL: null,
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const [dataAdmin, setDataAdmin] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -41,7 +30,7 @@ export const AuthContextProvider = ({ children }) => {
     }, (error) => {
       NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
     });
-  }, []);
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider
