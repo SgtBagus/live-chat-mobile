@@ -27,7 +27,7 @@ const Profile = () => {
   });
 
   const { dispatchLoading } = useContext(LoadingContext);
-  const { currentUser: { uid }, dataAdmin } = useContext(AuthContext);
+  const { currentUser: { uid }, dataAdmin } = useContext(AuthContext) || { currentUser: { uid: null }, dataAdmin: null };
   const { displayName, photoURL, email, userDesc } = dataUser;
 
   useEffect(() => {

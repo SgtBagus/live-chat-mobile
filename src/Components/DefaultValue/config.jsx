@@ -1,6 +1,6 @@
 import defaultImage from './defaultImage.png';
 import defaultImageIcon from './defaultImageIcon.png';
-import defaultImageMobile from './defaultImageMoble.png';
+import defaultImageMobile from './defaultImageMoble.jpg';
 
 export const DEFAULT_IMAGE = defaultImage;
 export const DEFAULT_IMAGE_ICON = defaultImageIcon;
