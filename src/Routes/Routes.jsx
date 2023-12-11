@@ -15,6 +15,7 @@ import Account from "../Pages/Account";
 import Chat from "../Pages/Chat";
 
 import { AuthContext } from "../context/AuthContext";
+import WorkingFlow from "../Pages/WorkingFlow";
 
 
 const RenderDefaultLayout = (pageComponents, path) => (
@@ -39,7 +40,7 @@ const RoutesComponents = () => {
   const HasRoute = ({ children }) => {
     if (!isLoading) {
       if (currentUser) {
-        return <Navigate to="/" />;
+        return <Navigate to="/working-flow" />;
       }
     }
 
@@ -53,6 +54,14 @@ const RoutesComponents = () => {
         element={
           <ProtectedRoute>
             {RenderDefaultLayout(<Home />, "/" )}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="working-flow"
+        element={
+          <ProtectedRoute>
+            {RenderDefaultLayout(<WorkingFlow />, "/working-flow" )}
           </ProtectedRoute>
         }
       />

@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
-
 import 'firebase/database';
 
 const firebaseConfig = {

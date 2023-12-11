@@ -19,8 +19,8 @@ export const FooterComponents = ({ currentPath }) => {
             id: 2,
             title: 'List Kegiatan',
             iconMenu: 'ri-list-ordered',
-            path: '/to-do',
-            onClick: () => handelNavigate('/to-do'),
+            path: '/working-flow',
+            onClick: () => handelNavigate('/working-flow'),
         },
         {
             id: 3,

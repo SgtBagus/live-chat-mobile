@@ -14,7 +14,7 @@ export const LayoutDefault = ({ children, path }) => {
         <>
             <HeaderComponents />
                 {
-                    (currentUser && !currentUser.emailVerified) && (
+                    (currentUser && currentUser.emailVerified) || (
                         <EmailVerification currentUser={currentUser} />
                     )
                 }
