@@ -74,7 +74,7 @@ const Home = () => {
         />
       </Container>
 
-      <Container
+      {/* <Container
         className="section-t-space-3"
         title="Solusi Cepat"
         link="/fast-solusion"
@@ -100,7 +100,7 @@ const Home = () => {
             },
           ]}
         />
-      </Container>
+      </Container> */}
 
       <Container
         className="section-t-sm-space feature-section"

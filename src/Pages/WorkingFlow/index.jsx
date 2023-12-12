@@ -61,8 +61,8 @@ const WorkingFlow = () => {
                     <li className="active">
                         <ModalsWorkingList
                             target='to-do-list-1'
-                            modalHeight="500px"
-                            modalTitle="Nama Judulnya"
+                            modalHeight="800px"
+                            modalTitle="Trapi Sakit Lambung !"
                         />
                     </li>
                 </ul>
