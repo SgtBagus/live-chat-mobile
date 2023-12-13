@@ -10,6 +10,7 @@ import { LoadingContext } from "../../context/LoadingContext";
 import { AuthContext } from "../../context/AuthContext";
 
 import './style.scss';
+import { DEFAULT_TASK_LIST } from "./enum";
 
 const WorkingFlow = () => {
     const navigate = useNavigate();
@@ -26,7 +27,6 @@ const WorkingFlow = () => {
             }
         };
     }, [dispatchLoading, uid]);
-
     
     const handelbuttonChat = () => {
         return navigate("/chat");
@@ -57,15 +57,22 @@ const WorkingFlow = () => {
             <Container
                 className="ecommerce-address-section"
             >
-                <ul className="address-list">
-                    <li className="active">
-                        <ModalsWorkingList
-                            target='to-do-list-1'
-                            modalHeight="800px"
-                            modalTitle="Trapi Sakit Lambung !"
-                        />
-                    </li>
-                </ul>
+                <div className="address-list">
+                    <ModalsWorkingList
+                        target='to-do-list-1'
+                        modalHeight="750px"
+                        title="Trapi Sakit Lambung !"
+                        task="Lakukan Langkah Berikut !"
+                        note="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam malesuada dolor sem. Donec sed commodo nulla. In mollis egestas turpis sit amet varius. Aenean laoreet placerat quam dictum sagittis."
+                        toDoProgress={50}
+                        taskList={DEFAULT_TASK_LIST}
+                        progressNote="Perkembangan adalah kunci menuju keberhasilan, dan kelihatan trapi merupakan bukti perjalanan yang berarti."
+                        finish={false}
+                        finishDate="2020-10-23"
+                        createdDate="2020-10-23"
+                        updatedDate="2020-10-23"
+                    />
+                </div>
             </Container>
         </>
     );

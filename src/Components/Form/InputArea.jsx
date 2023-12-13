@@ -27,9 +27,8 @@ const InputArea = (props) => {
             onChange={e => changeEvent(e.target.value, e)}
             placeholder={placeholder}
             title={title}
-        >
-            {value}
-        </textarea>
+            value={value}
+        />
     );
 };
 

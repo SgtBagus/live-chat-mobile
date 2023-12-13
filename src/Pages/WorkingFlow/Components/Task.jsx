@@ -7,23 +7,24 @@ import { checkfileUrl } from "../../../Helper/checkFile";
 
 const Task = ({
     finish, title, task, note, attact,
+    updatedAt, createdAt, finishDate, icon,
 }) => {
     return (
-        <li className={finish && 'finish'}>
+        <li className={finish ? 'finish' : ''}>
             <div className="order-box">
-                <div className="main-content d-flex justify-content-between">
+                <div className="main-content d-flex justify-content-between w-100">
                     <div className="left-icon">
                         {
                             finish ? (
                                 <i className="ri-check-line" />
                             ) : (
-                                <i className="ri-task-line" />
+                                <i className={icon} />
                             )
                         }
                     </div>
                     <div className="right-content">
                         <h4>{title}</h4>
-                        <div className="border border-2 rounded p-2">
+                        <div>
                             <span className="mb-2">{task}</span>
                             <p>{note}</p>                
                             {
@@ -52,6 +53,32 @@ const Task = ({
                                 )
                             }
                         </div>
+                        <hr />
+                        <div className="d-flex flex-column my-2">
+                            {
+                                finish ? (
+                                    <>
+                                        <h6 className="d-flex text-align-center fw-bold">
+                                            <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
+                                        </h6>
+                                        <h6 className="d-flex text-align-center">
+                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {finishDate}
+                                        </h6>
+                                    </>
+                                ) : (
+                                    <h6 className="d-flex text-align-center fw-bold">
+                                        <i className="ri-close-circle-line me-1" /> Status Kegiatan: Belum Selesai
+                                    </h6>
+                                )
+                            }
+                            <hr />
+                            <small className="d-flex text-align-center">
+                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {createdAt}
+                            </small>
+                            <small className="d-flex text-align-center">
+                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {updatedAt}
+                            </small>
+                        </div>  
                     </div>
                 </div>
                 <div className="w-100">

@@ -25,3 +25,22 @@ export const LayoutDefault = ({ children, path }) => {
         </>
     )
 }
+
+export const LayoutVideo = ({ children, path }) => {
+    const { currentUser } = useContext(AuthContext);
+
+    return (
+        <>
+            <HeaderComponents />
+                {
+                    (currentUser && currentUser.emailVerified) || (
+                        <EmailVerification currentUser={currentUser} />
+                    )
+                }
+                {children}
+                
+                <div style={{ height: '100px' }}/>
+            <FooterComponents currentPath={path} />
+        </>
+    )
+}
