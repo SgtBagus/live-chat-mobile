@@ -47,8 +47,6 @@ const Profile = () => {
     return () => { 
       if (uid) {
         GetDataUser();
-      } else {
-        dispatchLoading(true);
       }
     };
   }, [dispatchLoading, uid]);

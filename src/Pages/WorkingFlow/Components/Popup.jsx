@@ -8,9 +8,10 @@ import Task from "./Task";
 import InputArea from "../../../Components/Form/InputArea";
 import Button from "../../../Components/Button";
 import { DEFAULT_TASK_LIST } from "../enum";
+import fireBaseTime from "../../../Helper/fireBaseTime";
 
 const PopupWorkingList = ({
-    note, taskList, finish, finishDate, createdDate, updatedDate, progressNote,
+    note, taskLists, finish, finishDate, createdDate, updatedDate, progressNote,
 }) => { 
     const [form, setForm] = useState({ descUser: progressNote });
     const { descUser } = form;
@@ -34,20 +35,20 @@ const PopupWorkingList = ({
                 
                 <ul className="order-tracking-list pop-up-list m-0">
                     {
-                        taskList.map(({
-                            attact, id, note, finish,
-                            task, title, updatedAt, createdAt, finishDate, icon, 
+                        taskLists.map(({
+                            attact, id, note, finishStatus,
+                            task, title, updatedAt, createdAt, finishedAt, icon, 
                         }) => (
                             <Task
                                 key={id}
-                                finish={finish}
+                                finish={finishStatus}
                                 title={title}
                                 task={task}
                                 note={note}
                                 attact={attact}
                                 updatedAt={updatedAt}
                                 createdAt={createdAt}
-                                finishDate={finishDate}
+                                finishedAt={finishedAt}
                                 icon={icon}
                             />
                         ))
@@ -62,7 +63,7 @@ const PopupWorkingList = ({
                                     <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
                                 </h6>
                                 <h6 className="d-flex text-align-center">
-                                    <i className="ri-calendar-line me-1" /> Diselesikan Pada: {finishDate}
+                                    <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishDate).toDateString().toString("MMMM yyyy")}
                                 </h6>
                             </>
                         ) : (
@@ -73,10 +74,10 @@ const PopupWorkingList = ({
                     }
                     <hr />
                     <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Dibuat Pada: {createdDate}
+                        <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdDate).toDateString().toString("MMMM yyyy")}
                     </h6>
                     <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Diupdate Pada: {updatedDate}
+                        <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedDate).toDateString().toString("MMMM yyyy")}
                     </h6>
                 </div>
                 <hr />
@@ -100,7 +101,7 @@ const PopupWorkingList = ({
 
 PopupWorkingList.propTypes = {
     note: PropTypes.string,
-    taskList: PropTypes.arrayOf(
+    taskLists: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string,
             title: PropTypes.string,
@@ -109,24 +110,24 @@ PopupWorkingList.propTypes = {
             attact: PropTypes.string,
             icon: PropTypes.string,
             finish: PropTypes.bool,
-            finishDate: PropTypes.string,
-            createdAt: PropTypes.string,
-            updatedAt: PropTypes.string,
+            finishDate: PropTypes.shape({}),
+            createdAt: PropTypes.shape({}),
+            updatedAt: PropTypes.shape({}),
         })
     ),
     finish: PropTypes.bool,
-    finishDate: PropTypes.string,
-    createdDate: PropTypes.string,
-    updatedDate: PropTypes.string,
+    finishDate: PropTypes.shape({}),
+    createdDate: PropTypes.shape({}),
+    updatedDate: PropTypes.shape({}),
     progressNote: PropTypes.string,
 };
 
 PopupWorkingList.defaultProps = {
     note: "",
-    taskList: DEFAULT_TASK_LIST,
-    finishDate: '',
-    createdDate: '',
-    updatedDate: '',
+    taskLists: DEFAULT_TASK_LIST,
+    finishDate: null,
+    createdDate: null,
+    updatedDate: null,
     progressNote: '',
 };
 

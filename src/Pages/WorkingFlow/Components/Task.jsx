@@ -5,9 +5,11 @@ import Button from "../../../Components/Button";
 
 import { checkfileUrl } from "../../../Helper/checkFile";
 
+import fireBaseTime from "../../../Helper/fireBaseTime";
+
 const Task = ({
     finish, title, task, note, attact,
-    updatedAt, createdAt, finishDate, icon,
+    updatedAt, createdAt, finishedAt, icon,
 }) => {
     return (
         <li className={finish ? 'finish' : ''}>
@@ -62,7 +64,7 @@ const Task = ({
                                             <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
                                         </h6>
                                         <h6 className="d-flex text-align-center">
-                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {finishDate}
+                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishedAt).toDateString().toString("MMMM yyyy")}
                                         </h6>
                                     </>
                                 ) : (
@@ -73,10 +75,10 @@ const Task = ({
                             }
                             <hr />
                             <small className="d-flex text-align-center">
-                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {createdAt}
+                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdAt).toDateString().toString("MMMM yyyy")}
                             </small>
                             <small className="d-flex text-align-center">
-                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {updatedAt}
+                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedAt).toDateString().toString("MMMM yyyy")}
                             </small>
                         </div>  
                     </div>

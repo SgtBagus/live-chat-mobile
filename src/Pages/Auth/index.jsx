@@ -12,6 +12,8 @@ const AuthLogin = () => {
     const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
+        dispatchLoading(true);
+
         if (!currentUser) {
           dispatchLoading(false);
         }

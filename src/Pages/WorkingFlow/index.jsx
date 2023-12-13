@@ -1,33 +1,50 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 import Container from "../../Components/Container";
 import Button from "../../Components/Button";
 
 import ModalsWorkingList from "./Components/Modals";
 
+import { db } from "../../firebase";
 import { LoadingContext } from "../../context/LoadingContext";
 import { AuthContext } from "../../context/AuthContext";
 
+import { catchError } from "../../Helper/helper";
+
 import './style.scss';
-import { DEFAULT_TASK_LIST } from "./enum";
 
 const WorkingFlow = () => {
+    const [dataTodo, setDataToDo] = useState(null);
+
     const navigate = useNavigate();
 
     const { currentUser: { uid } } = useContext(AuthContext) || { currentUser: { uid: null } };
     const { dispatchLoading } = useContext(LoadingContext);
 
     useEffect(() => {
-        return () => {
-            if (uid) {
-                dispatchLoading(false);
-            } else {
-                dispatchLoading(true);
-            }
+        dispatchLoading(true);
+
+        const res = query(collection(db, "toDoLists"), where("uid", "==", uid));
+
+        const GetDataTodo = onSnapshot(res, (querySnapshot) => {
+            const returnData = [];
+            querySnapshot.forEach((doc) => returnData.push(doc.data()));
+
+            setDataToDo(returnData);
+            dispatchLoading(false);
+        }, (error) => {
+          NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
+        });
+    
+        return () => { 
+          if (uid) {
+            GetDataTodo();
+          }
         };
     }, [dispatchLoading, uid]);
-
 
     const handelbuttonChat = () => {
         return navigate("/chat");
@@ -54,43 +71,42 @@ const WorkingFlow = () => {
                     </div>
                 </div>
             </Container>
-            
-            <Container
-                className="w-100 text-center my-2"
-                style={{
-                    opacity: '0.5',
-                }}
-            >
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
-                    className="img-fluid" alt=""
-                    style={{
-                        width: '200px',
-                        objectFit: 'cover',
-                    }}
-                />
-            </Container>
-
-            <Container
-                className="ecommerce-address-section"
-            >
-                <div className="address-list">
-                    <ModalsWorkingList
-                        target='to-do-list-1'
-                        modalHeight="750px"
-                        title="Trapi Sakit Lambung !"
-                        task="Lakukan Langkah Berikut !"
-                        note="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam malesuada dolor sem. Donec sed commodo nulla. In mollis egestas turpis sit amet varius. Aenean laoreet placerat quam dictum sagittis."
-                        toDoProgress={50}
-                        taskList={DEFAULT_TASK_LIST}
-                        progressNote="Perkembangan adalah kunci menuju keberhasilan, dan kelihatan trapi merupakan bukti perjalanan yang berarti."
-                        finish={false}
-                        finishDate="2020-10-23"
-                        createdDate="2020-10-23"
-                        updatedDate="2020-10-23"
-                    />
-                </div>
-            </Container>
+            {
+                dataTodo ? (
+                    <Container
+                        className="ecommerce-address-section"
+                    >
+                        <div className="address-list">
+                            {
+                                dataTodo.map((data, idx) => (
+                                    <ModalsWorkingList
+                                        key={`${idx}-${data.id}`}
+                                        target='to-do-list-1'
+                                        modalHeight="750px"
+                                        dataTodo={data}
+                                    />
+                                ))
+                            }
+                        </div>
+                    </Container>
+                ) : (
+                    <Container
+                        className="w-100 text-center my-2"
+                        style={{
+                            opacity: '0.5',
+                        }}
+                    >
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
+                            className="img-fluid" alt=""
+                            style={{
+                                width: '200px',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    </Container>
+                )
+            }
         </>
     );
 };

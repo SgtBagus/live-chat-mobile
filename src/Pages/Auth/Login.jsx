@@ -27,7 +27,7 @@ const Login = () => {
   const { dispatchLoading } = useContext(LoadingContext);
 
   useEffect(() => {
-      dispatchLoading(false);
+    dispatchLoading(false);
   });
 
   const navigate = useNavigate();

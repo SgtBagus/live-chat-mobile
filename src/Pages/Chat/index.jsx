@@ -16,11 +16,11 @@ const Chat = () => {
     const { uid, displayName, photoURL, userDesc } = dataAdmin;
 
     useEffect(() => {
+      dispatchLoading(true);
+
       return () => {
         if (uid) {
           dispatchLoading(false);
-        } else {
-          dispatchLoading(true);
         }
       };
     }, [dispatchLoading, uid]);

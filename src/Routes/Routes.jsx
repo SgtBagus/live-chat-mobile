@@ -13,9 +13,10 @@ import Page404 from "../Layout/Page404";
 import Home from "../Pages/Home";
 import Account from "../Pages/Account";
 import Chat from "../Pages/Chat";
-import WorkingFlow from "../Pages/WorkingFlow";
 
 import { AuthContext } from "../context/AuthContext";
+import WorkingFlow from "../Pages/WorkingFlow";
+
 
 const RenderDefaultLayout = (pageComponents, path) => (
   <LayoutDefault path={path} >
@@ -80,7 +81,6 @@ const RoutesComponents = () => {
           </ProtectedRoute>
         }
       />
-
 
 
 

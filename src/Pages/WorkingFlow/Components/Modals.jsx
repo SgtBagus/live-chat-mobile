@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import PopupWorkingList from "./Popup";
+import fireBaseTime from "../../../Helper/fireBaseTime";
 import { DEFAULT_TASK_LIST } from "../enum";
+
+import PopupWorkingList from "./Popup";
 
 const createProgressBar = (value) => (
     <div className="progress-bar-section my-2">
@@ -16,15 +18,19 @@ const createProgressBar = (value) => (
 )
 
 const ModalsWorkingList = ({
-    target, modalHeight, title, task, note,
-    toDoProgress, taskList, progressNote, finish,
-    finishDate, createdDate, updatedDate,
+    target, modalHeight,
+    dataTodo: {
+        title, task, note, taskLists, progressNote, finish,
+        finishDate, createdDate, updatedDate,
+    }
 }) => {
-    const lastItemInMap =  Array.from(taskList.values()).pop();
+    const lastItemInMap =  Array.from(taskLists.values()).pop();
     const {
         finish: finishLastTask, icon: iconLastTask, title: titleLastTask,
         task: taskLastTask,
     } = lastItemInMap;
+
+    const toDoProgress = 50;
 
     return (
         <>
@@ -96,7 +102,7 @@ const ModalsWorkingList = ({
                                     <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
                                 </h6>
                                 <h6 className="d-flex text-align-center">
-                                    <i className="ri-calendar-line me-1" /> Diselesikan Pada: {finishDate}
+                                    <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishDate).toDateString().toString("MMMM yyyy")}
                                 </h6>
                             </>
                         ) : (
@@ -107,10 +113,10 @@ const ModalsWorkingList = ({
                     }
                     <hr />
                     <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Dibuat Pada: {createdDate}
+                        <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdDate).toDateString().toString("MMMM yyyy")}
                     </h6>
                     <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Diupdate Pada: {updatedDate}
+                        <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedDate).toDateString().toString("MMMM yyyy")}
                     </h6>
                 </div>
             </div>
@@ -154,7 +160,7 @@ const ModalsWorkingList = ({
                 <div className="offcanvas-body p-0">
                     <PopupWorkingList
                         note={note}
-                        taskList={taskList}
+                        taskLists={taskLists}
                         finish={finish}
                         finishDate={finishDate}
                         createdDate={createdDate}
@@ -170,44 +176,46 @@ const ModalsWorkingList = ({
 ModalsWorkingList.propTypes = {
     target: PropTypes.string,
     modalHeight: PropTypes.string,
-    title: PropTypes.string,
-    note: PropTypes.string,
-    task: PropTypes.string,
-    toDoProgress: PropTypes.number,
-    taskList: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string,
-            title: PropTypes.string,
-            task: PropTypes.string,
-            note: PropTypes.string,
-            attact: PropTypes.string,
-            icon: PropTypes.string,
-            status: PropTypes.bool,
-            finishAt: PropTypes.string,
-            createdAt: PropTypes.string,
-            updatedAt: PropTypes.string,
-        })
-    ),
-    progressNote: PropTypes.string,
-    status: PropTypes.bool,
-    finishDate: PropTypes.string,
-    createdDate: PropTypes.string,
-    updatedDate: PropTypes.string,
+    dataTodo: PropTypes.shape({
+        title: PropTypes.string,
+        note: PropTypes.string,
+        task: PropTypes.string,
+        taskLists: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.string,
+                title: PropTypes.string,
+                task: PropTypes.string,
+                note: PropTypes.string,
+                attact: PropTypes.string,
+                icon: PropTypes.string,
+                status: PropTypes.bool,
+                finishAt: PropTypes.shape({}),
+                createdAt: PropTypes.shape({}),
+                updatedAt: PropTypes.shape({}),
+            })
+        ),
+        progressNote: PropTypes.string,
+        status: PropTypes.bool,
+        finishDate: PropTypes.shape({}),
+        createdDate: PropTypes.shape({}),
+        updatedDate: PropTypes.shape({}),
+    }),
 };
 
 ModalsWorkingList.defaultProps = {
     target: "modalsPopup",
     modalHeight: "100%",
-    title: "Filter",
-    note: "",
-    task: "",
-    toDoProgress: 0,
-    taskList: DEFAULT_TASK_LIST,
-    progressNote: '',
-    status: false,
-    finishDate: '',
-    createdDate: '',
-    updatedDate: '',
+    dataTodo: {
+        title: "Filter",
+        note: "",
+        task: "",
+        taskLists: DEFAULT_TASK_LIST,
+        progressNote: '',
+        status: false,
+        finishDate: null,
+        createdDate: null,
+        updatedDate: null,
+    }
 };
 
 export default ModalsWorkingList;
