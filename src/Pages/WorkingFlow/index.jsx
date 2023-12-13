@@ -27,7 +27,8 @@ const WorkingFlow = () => {
             }
         };
     }, [dispatchLoading, uid]);
-    
+
+
     const handelbuttonChat = () => {
         return navigate("/chat");
     }
@@ -54,6 +55,22 @@ const WorkingFlow = () => {
                 </div>
             </Container>
             
+            <Container
+                className="w-100 text-center my-2"
+                style={{
+                    opacity: '0.5',
+                }}
+            >
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
+                    className="img-fluid" alt=""
+                    style={{
+                        width: '200px',
+                        objectFit: 'cover',
+                    }}
+                />
+            </Container>
+
             <Container
                 className="ecommerce-address-section"
             >

@@ -23,7 +23,6 @@ const PopupWorkingList = ({
         await setForm(newForm);
     };
 
-    console.log(taskList);
     return (
         <Container style={{ overflow: 'auto' }}>
             <div className="order-detail-box m-0 p-0 border-0">

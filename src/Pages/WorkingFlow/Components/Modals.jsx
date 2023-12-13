@@ -41,7 +41,7 @@ const ModalsWorkingList = ({
                             : (<i className="ri-information-fill" style={{ fontSize: '25px' }} />)
                         }
                     </div>
-                    <h3>{title}</h3>
+                    <p className="h3">{title}</p>
                 </div>
                 <div className="order-detail-box m-0 p-0 border-0">
                     <div className="product-title">
@@ -133,7 +133,7 @@ const ModalsWorkingList = ({
                                 : (<i className="ri-information-fill" style={{ fontSize: '25px' }} />)
                             }
                         </div>
-                        <h3>{title}</h3>
+                        <p className="h3">{title}</p>
                     </h4>
                     <button
                         type="button"

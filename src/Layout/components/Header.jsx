@@ -4,16 +4,14 @@ export const HeaderComponents = () => {
     return (
         <header className="header-style-5">
             <div className="header-left">
-                <a href="index.html">
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
-                        className="img-fluid" alt=""
-                        style={{
-                            width: '100px',
-                            objectFit: 'cover',
-                        }}
-                    />
-                </a>
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
+                    className="img-fluid" alt=""
+                    style={{
+                        width: '100px',
+                        objectFit: 'cover',
+                    }}
+                />
             </div>
             <div className="header-right">
                 <a href="notification.html">
