@@ -1,27 +1,12 @@
-import React, { useEffect, useContext } from "react";
-
-import { LoadingContext } from "../../context/LoadingContext";
-import { AuthContext } from "../../context/AuthContext";
+import React from "react";
 
 import Container from "../../Components/Container";
 import CategoryList from "../../Components/CategoryList";
 import Accordion from "../../Components/Accordion";
 
-import FastSolusion from "./Components/FastSolusion";
 import Button from "../../Components/Button";
 
 const Home = () => {
-  const { dispatchLoading } = useContext(LoadingContext);
-  const { currentUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    dispatchLoading(true);
-
-    if (currentUser) {
-      dispatchLoading(false);
-    }
-  }, [currentUser, dispatchLoading]);
-
   return (
     <>
       <Container className="home-section">

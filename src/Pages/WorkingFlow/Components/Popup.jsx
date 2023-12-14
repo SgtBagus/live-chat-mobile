@@ -11,7 +11,8 @@ import { DEFAULT_TASK_LIST } from "../enum";
 import fireBaseTime from "../../../Helper/fireBaseTime";
 
 const PopupWorkingList = ({
-    note, taskLists, finish, finishDate, createdDate, updatedDate, progressNote,
+    mainId, note, taskLists, statusFinish, finishDate, createdDate, updatedDate, progressNote,
+    firstUnFinishId,
 }) => { 
     const [form, setForm] = useState({ descUser: progressNote });
     const { descUser } = form;
@@ -36,20 +37,18 @@ const PopupWorkingList = ({
                 <ul className="order-tracking-list pop-up-list m-0">
                     {
                         taskLists.map(({
-                            attact, id, note, finishStatus,
-                            task, title, updatedAt, createdAt, finishedAt, icon, 
+                            attact, id, note, statusFinish,
+                            task, title, updatedDate, createdDate, finishDate, icon, 
                         }) => (
                             <Task
                                 key={id}
-                                finish={finishStatus}
-                                title={title}
-                                task={task}
-                                note={note}
-                                attact={attact}
-                                updatedAt={updatedAt}
-                                createdAt={createdAt}
-                                finishedAt={finishedAt}
-                                icon={icon}
+                                firstUnFinishId={firstUnFinishId}
+                                mainId={mainId}
+                                dataTask={{
+                                    id, statusFinish, title, task,
+                                    note, attact, updatedDate,
+                                    createdDate, finishDate, icon,
+                                }}
                             />
                         ))
                     }
@@ -57,7 +56,7 @@ const PopupWorkingList = ({
                 <hr />
                 <div className="d-flex flex-column">
                     {
-                        finish ? (
+                        statusFinish ? (
                             <>
                                 <h6 className="d-flex text-align-center fw-bold">
                                     <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
@@ -100,6 +99,7 @@ const PopupWorkingList = ({
 };
 
 PopupWorkingList.propTypes = {
+    mainId: PropTypes.string,
     note: PropTypes.string,
     taskLists: PropTypes.arrayOf(
         PropTypes.shape({
@@ -120,15 +120,18 @@ PopupWorkingList.propTypes = {
     createdDate: PropTypes.shape({}),
     updatedDate: PropTypes.shape({}),
     progressNote: PropTypes.string,
+    firstUnFinishId: PropTypes.string,
 };
 
 PopupWorkingList.defaultProps = {
+    mainId: "",
     note: "",
     taskLists: DEFAULT_TASK_LIST,
     finishDate: null,
     createdDate: null,
     updatedDate: null,
     progressNote: '',
+    firstUnFinishId: null,
 };
 
 export default PopupWorkingList;

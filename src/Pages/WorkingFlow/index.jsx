@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 import Container from "../../Components/Container";
 import Button from "../../Components/Button";
@@ -27,18 +27,19 @@ const WorkingFlow = () => {
     useEffect(() => {
         dispatchLoading(true);
 
-        const res = query(collection(db, "toDoLists"), where("uid", "==", uid));
-
-        const GetDataTodo = onSnapshot(res, (querySnapshot) => {
-            const returnData = [];
-            querySnapshot.forEach((doc) => returnData.push(doc.data()));
-
-            setDataToDo(returnData);
+        const GetDataTodo = onSnapshot(doc(db, "toDoLists", uid), (doc) => {
+            const getData = Object.entries(doc.data());
+            const res = getData.map(x => x[1]);
+            const sortingList = res.sort(({ createdDate: pCreatedDate}, { createdDate }) => (
+                new Date(pCreatedDate.seconds * 1000 + pCreatedDate.nanoseconds/1000000) - new Date(createdDate.seconds * 1000 + createdDate.nanoseconds/1000000)
+            ));
+            
+            setDataToDo(sortingList);
             dispatchLoading(false);
         }, (error) => {
-          NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
+            NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
         });
-    
+
         return () => { 
           if (uid) {
             GetDataTodo();
@@ -81,7 +82,7 @@ const WorkingFlow = () => {
                                 dataTodo.map((data, idx) => (
                                     <ModalsWorkingList
                                         key={`${idx}-${data.id}`}
-                                        target='to-do-list-1'
+                                        target={`to-do-list-${data.id}`}
                                         modalHeight="750px"
                                         dataTodo={data}
                                     />

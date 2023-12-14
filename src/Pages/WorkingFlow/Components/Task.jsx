@@ -1,23 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-
 import Button from "../../../Components/Button";
 
 import { checkfileUrl } from "../../../Helper/checkFile";
-
 import fireBaseTime from "../../../Helper/fireBaseTime";
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { NotificationManager } from "react-notifications";
+import { catchError } from "../../../Helper/helper";
+
 
 const Task = ({
-    finish, title, task, note, attact,
-    updatedAt, createdAt, finishedAt, icon,
+    dataTask: {
+        id, statusFinish, title, task, note, attact,
+        updatedDate, createdDate, finishDate, icon, 
+    }, firstUnFinishId, mainId,
 }) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handelChangeFile = async (id, finishStatus) => {
+        setIsLoading(true);
+        try {
+            await updateDoc(doc(db, "toDoTaskLists", mainId), {
+                [id + ".statusFinish"]: finishStatus,
+                [id + ".finishDate"]: serverTimestamp(),
+                [id + ".updatedDate"]: serverTimestamp(),
+            });
+        } catch (err) {
+            NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
-        <li className={finish ? 'finish' : ''}>
+        <li className={statusFinish ? 'finish' : ''}>
             <div className="order-box">
                 <div className="main-content d-flex justify-content-between w-100">
                     <div className="left-icon">
                         {
-                            finish ? (
+                            statusFinish ? (
                                 <i className="ri-check-line" />
                             ) : (
                                 <i className={icon} />
@@ -58,27 +80,27 @@ const Task = ({
                         <hr />
                         <div className="d-flex flex-column my-2">
                             {
-                                finish ? (
+                                statusFinish ? (
                                     <>
-                                        <h6 className="d-flex text-align-center fw-bold">
+                                        <small className="d-flex text-align-center fw-bold">
                                             <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
-                                        </h6>
-                                        <h6 className="d-flex text-align-center">
-                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishedAt).toDateString().toString("MMMM yyyy")}
-                                        </h6>
+                                        </small>
+                                        <small className="d-flex text-align-center">
+                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishDate).toDateString().toString("MMMM yyyy")}
+                                        </small>
                                     </>
                                 ) : (
-                                    <h6 className="d-flex text-align-center fw-bold">
+                                    <small className="d-flex text-align-center fw-bold">
                                         <i className="ri-close-circle-line me-1" /> Status Kegiatan: Belum Selesai
-                                    </h6>
+                                    </small>
                                 )
                             }
                             <hr />
                             <small className="d-flex text-align-center">
-                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdAt).toDateString().toString("MMMM yyyy")}
+                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdDate).toDateString().toString("MMMM yyyy")}
                             </small>
                             <small className="d-flex text-align-center">
-                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedAt).toDateString().toString("MMMM yyyy")}
+                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedDate).toDateString().toString("MMMM yyyy")}
                             </small>
                         </div>  
                     </div>
@@ -86,17 +108,12 @@ const Task = ({
                 <div className="w-100">
                     <div className="button-complete-task">
                         {
-                            finish ? (
-                                <Button
-                                    className="btn btn-danger my-2"
-                                    label="Trapi Ini belum selesai !"
-                                    onClick={() => {}}
-                                />
-                            ) : (
+                            (!statusFinish && id === firstUnFinishId) && (
                                 <Button
                                     className="btn btn-success my-2"
-                                    label="Selesaikan Trapi !"
-                                    onClick={() => {}}
+                                    label={isLoading ? "Memperoses...!!!" : "Selesaikan Trapi !"}
+                                    disabled={isLoading}
+                                    onClick={() => handelChangeFile(id, !statusFinish)}
                                 />
                             )
                         }
@@ -108,19 +125,27 @@ const Task = ({
 };
 
 Task.propTypes = {
-    finish: PropTypes.bool,
-    title: PropTypes.string,
-    task: PropTypes.string,
-    note: PropTypes.string,
-    attact: PropTypes.string,
+    dataTask: PropTypes.shape({
+        id: PropTypes.string,
+        finish: PropTypes.bool,
+        title: PropTypes.string,
+        task: PropTypes.string,
+        note: PropTypes.string,
+        attact: PropTypes.string,
+    }),
+    mainId: PropTypes.string,
 };
 
 Task.defaultProps = {
-    finish: false,
-    title: 'Title',
-    task: 'Task',
-    note: 'Note',
-    attact: null,
+    dataTask: {
+        id: '1',
+        finish: false,
+        title: 'Title',
+        task: 'Task',
+        note: 'Note',
+        attact: null,
+    },
+    mainId: null,
 };
 
 export default Task;

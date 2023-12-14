@@ -8,9 +8,9 @@ export const DEFAULT_TASK_LIST = [
         note: 'note',
         attact: DEFAULT_IMAGE,
         icon: 'ri-walk-line',
-        finish: false,
+        statusFinish: false,
         finishDate: null,
-        createdAt: null,
-        updatedAt: null,
+        createdDate: null,
+        updatedDate: null,
     },
 ]

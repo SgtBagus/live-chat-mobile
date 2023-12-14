@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 
 import { ChatContextProvider } from "../../context/ChatContext";
 import { AuthContext } from "../../context/AuthContext";
-import { LoadingContext } from "../../context/LoadingContext";
 
 import ChatForm from "./Components/Form";
 import Messages from "./Components/Messages";
@@ -11,19 +10,7 @@ import Container from "../../Components/Container";
 
 const Chat = () => {
     const { currentUser, dataAdmin } = useContext(AuthContext);
-    const { dispatchLoading } = useContext(LoadingContext);
-
-    const { uid, displayName, photoURL, userDesc } = dataAdmin;
-
-    useEffect(() => {
-      dispatchLoading(true);
-
-      return () => {
-        if (uid) {
-          dispatchLoading(false);
-        }
-      };
-    }, [dispatchLoading, uid]);
+    const { displayName, photoURL, userDesc } = dataAdmin;
 
     return (
       <>
