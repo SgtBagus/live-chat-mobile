@@ -1,21 +1,47 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import update from "immutability-helper";
+import { NotificationManager } from "react-notifications";
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 
-import Container from "../../../Components/Container";
+import { db } from "../../../firebase";
 
 import Task from "./Task";
+import Container from "../../../Components/Container";
 import InputArea from "../../../Components/Form/InputArea";
 import Button from "../../../Components/Button";
-import { DEFAULT_TASK_LIST } from "../enum";
+import Loading from "../../../Components/Loading";
+
+import { AuthContext } from "../../../context/AuthContext";
+
 import fireBaseTime from "../../../Helper/fireBaseTime";
+import { catchError } from "../../../Helper/helper";
+
+import { DEFAULT_TASK_LIST } from "../enum";
 
 const PopupWorkingList = ({
     mainId, note, taskLists, statusFinish, finishDate, createdDate, updatedDate, progressNote,
     firstUnFinishId,
 }) => { 
     const [form, setForm] = useState({ descUser: progressNote });
+    const [isLoading, setIsLoading] = useState(false);
     const { descUser } = form;
+
+    const { currentUser: { uid } } = useContext(AuthContext) || { currentUser: { uid: null } };
+
+    const handelChangeNota = async (id) => {
+        setIsLoading(true);
+        try {
+            await updateDoc(doc(db, "toDoLists", uid), {
+                [mainId + ".progressNote"]: descUser,
+                [mainId + ".updatedDate"]: serverTimestamp(),
+            });
+        } catch (err) {
+            NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const changeInputHandler = async (type, val) => {
         const newForm = update(form, {
@@ -54,31 +80,39 @@ const PopupWorkingList = ({
                     }
                 </ul>
                 <hr />
-                <div className="d-flex flex-column">
-                    {
-                        statusFinish ? (
-                            <>
-                                <h6 className="d-flex text-align-center fw-bold">
-                                    <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
-                                </h6>
-                                <h6 className="d-flex text-align-center">
-                                    <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishDate).toDateString().toString("MMMM yyyy")}
-                                </h6>
-                            </>
-                        ) : (
-                            <h6 className="d-flex text-align-center fw-bold">
-                                <i className="ri-close-circle-line me-1" /> Status Kegiatan: Belum Selesai
+                {
+                    isLoading
+                    ? (
+                        <Loading title="Memuat..." />
+                    )
+                    : (
+                        <div className="d-flex flex-column">
+                            {
+                                statusFinish ? (
+                                    <>
+                                        <h6 className="d-flex text-align-center fw-bold">
+                                            <i className="ri-checkbox-circle-line me-1" /> Status Kegiatan: Selesai
+                                        </h6>
+                                        <h6 className="d-flex text-align-center">
+                                            <i className="ri-calendar-line me-1" /> Diselesikan Pada: {fireBaseTime(finishDate).toDateString().toString("MMMM yyyy")}
+                                        </h6>
+                                    </>
+                                ) : (
+                                    <h6 className="d-flex text-align-center fw-bold">
+                                        <i className="ri-close-circle-line me-1" /> Status Kegiatan: Belum Selesai
+                                    </h6>
+                                )
+                            }
+                            <hr />
+                            <h6 className="d-flex text-align-center">
+                                <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdDate).toDateString().toString("MMMM yyyy")}
                             </h6>
-                        )
-                    }
-                    <hr />
-                    <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Dibuat Pada: {fireBaseTime(createdDate).toDateString().toString("MMMM yyyy")}
-                    </h6>
-                    <h6 className="d-flex text-align-center">
-                        <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedDate).toDateString().toString("MMMM yyyy")}
-                    </h6>
-                </div>
+                            <h6 className="d-flex text-align-center">
+                                <i className="ri-calendar-line me-1" /> Diupdate Pada: {fireBaseTime(updatedDate).toDateString().toString("MMMM yyyy")}
+                            </h6>
+                        </div>
+                    )
+                }
                 <hr />
 
                 <h6 className="h5 fw-bold d-flex text-align-center my-2">Progress atau Keluhan Anda ! </h6>
@@ -90,8 +124,9 @@ const PopupWorkingList = ({
                 />
                 <Button
                     className="btn btn-success my-2"
-                    label="Simpan Progress atau Keluhan anda !"
-                    onClick={() => {}}
+                    label={isLoading ? "Memperoses...!!!" : "Simpan Progress atau Keluhan anda !"}
+                    disabled={isLoading}
+                    onClick={() => handelChangeNota()}
                 />
             </div>
         </Container>

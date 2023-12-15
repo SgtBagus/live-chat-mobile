@@ -18,7 +18,7 @@ const Task = ({
 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const handelChangeFile = async (id, finishStatus) => {
+    const handelChangeStatus = async (id, finishStatus) => {
         setIsLoading(true);
         try {
             await updateDoc(doc(db, "toDoTaskLists", mainId), {
@@ -113,7 +113,7 @@ const Task = ({
                                     className="btn btn-success my-2"
                                     label={isLoading ? "Memperoses...!!!" : "Selesaikan Trapi !"}
                                     disabled={isLoading}
-                                    onClick={() => handelChangeFile(id, !statusFinish)}
+                                    onClick={() => handelChangeStatus(id, !statusFinish)}
                                 />
                             )
                         }
