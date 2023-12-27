@@ -14,18 +14,21 @@ const Task = ({
     dataTask: {
         id, statusFinish, title, task, note, attact,
         updatedDate, createdDate, finishDate, icon, 
-    }, firstUnFinishId, mainId,
+    }, firstUnFinishId, taskListId,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handelChangeStatus = async (id, finishStatus) => {
         setIsLoading(true);
+
         try {
-            await updateDoc(doc(db, "toDoTaskLists", mainId), {
+            await updateDoc(doc(db, "toDoTaskLists", taskListId), {
                 [id + ".statusFinish"]: finishStatus,
                 [id + ".finishDate"]: serverTimestamp(),
                 [id + ".updatedDate"]: serverTimestamp(),
             });
+
+            NotificationManager.success('Success', 'Berhasil merubah data !', 5000);
         } catch (err) {
             NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
         } finally {

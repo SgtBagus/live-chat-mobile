@@ -35,9 +35,9 @@ const getPercentage = (data = []) => {
 const ModalsWorkingList = ({
     target, modalHeight,
     dataTodo: {
-        id: mainId, title, task, note, progressNote, statusFinish,
+        id: mainId, title, task, note, progressNote, statusFinish, taskListId,
         finishDate, createdDate, updatedDate,
-    }
+    },
 }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [taskLists, setTaskList] = useState([]);
@@ -47,7 +47,7 @@ const ModalsWorkingList = ({
     useEffect(() => {
         setIsLoading(true);
 
-        const getTaskList = onSnapshot(doc(db, "toDoTaskLists", mainId), (doc) => {
+        const getTaskList = onSnapshot(doc(db, "toDoTaskLists", taskListId), (doc) => {
             const getData = Object.entries(doc.data());
             const res = getData.map(x => x[1]);
             
@@ -65,7 +65,7 @@ const ModalsWorkingList = ({
         });
     
         return () => { getTaskList(); };
-    }, [mainId]);
+    }, [taskListId]);
 
     return (
         <>
@@ -240,6 +240,7 @@ const ModalsWorkingList = ({
                         note={note}
                         taskLists={taskLists}
                         mainId={mainId}
+                        taskListId={taskListId}
                         statusFinish={statusFinish}
                         firstUnFinishId={unfinishTask ? unfinishTask.id : null}
                         finishDate={finishDate}
@@ -269,6 +270,7 @@ ModalsWorkingList.propTypes = {
                 attact: PropTypes.string,
                 icon: PropTypes.string,
                 status: PropTypes.bool,
+                taskListId: PropTypes.string,
                 finishDate: PropTypes.shape({}),
                 createdDate: PropTypes.shape({}),
                 updatedDate: PropTypes.shape({}),
@@ -292,6 +294,7 @@ ModalsWorkingList.defaultProps = {
         taskLists: DEFAULT_TASK_LIST,
         progressNote: '',
         status: false,
+        taskListId: null,
         finishDate: null,
         createdDate: null,
         updatedDate: null,

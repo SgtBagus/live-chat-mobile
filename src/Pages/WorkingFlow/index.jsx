@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 import Container from "../../Components/Container";
 import Button from "../../Components/Button";
@@ -27,10 +27,14 @@ const WorkingFlow = () => {
     useEffect(() => {
         dispatchLoading(true);
 
-        const GetDataTodo = onSnapshot(doc(db, "toDoLists", uid), (doc) => {
-            const getData = Object.entries(doc.data());
-            const res = getData.map(x => x[1]);
-            const sortingList = res.sort(({ createdDate: pCreatedDate}, { createdDate }) => (
+        const q = query(collection(db, "toDoLists"), where("uid", "==", uid));
+        const GetDataTodo = onSnapshot(q, (querySnapshot) => {
+            const getData = [];
+            querySnapshot.forEach((doc) => {
+                getData.push(doc.data());
+            });
+
+            const sortingList = getData.sort(({ createdDate: pCreatedDate}, { createdDate }) => (
                 new Date(pCreatedDate.seconds * 1000 + pCreatedDate.nanoseconds/1000000) - new Date(createdDate.seconds * 1000 + createdDate.nanoseconds/1000000)
             ));
             

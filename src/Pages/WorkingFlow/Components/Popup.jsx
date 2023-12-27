@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import update from "immutability-helper";
 import { NotificationManager } from "react-notifications";
@@ -12,30 +12,30 @@ import InputArea from "../../../Components/Form/InputArea";
 import Button from "../../../Components/Button";
 import Loading from "../../../Components/Loading";
 
-import { AuthContext } from "../../../context/AuthContext";
-
 import fireBaseTime from "../../../Helper/fireBaseTime";
 import { catchError } from "../../../Helper/helper";
 
 import { DEFAULT_TASK_LIST } from "../enum";
 
 const PopupWorkingList = ({
-    mainId, note, taskLists, statusFinish, finishDate, createdDate, updatedDate, progressNote,
-    firstUnFinishId,
+    mainId, taskListId,
+    note, taskLists, progressNote,
+    statusFinish, firstUnFinishId,
+    finishDate, createdDate, updatedDate,
 }) => { 
     const [form, setForm] = useState({ descUser: progressNote });
     const [isLoading, setIsLoading] = useState(false);
     const { descUser } = form;
 
-    const { currentUser: { uid } } = useContext(AuthContext) || { currentUser: { uid: null } };
-
     const handelChangeNota = async (id) => {
         setIsLoading(true);
         try {
-            await updateDoc(doc(db, "toDoLists", uid), {
-                [mainId + ".progressNote"]: descUser,
-                [mainId + ".updatedDate"]: serverTimestamp(),
+            await updateDoc(doc(db, "toDoLists", mainId), {
+                "progressNote": descUser,
+                "updatedDate": serverTimestamp(),
             });
+
+            NotificationManager.success("Success", 'Berhasil mengupdate data!', 5000);
         } catch (err) {
             NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
         } finally {
@@ -69,7 +69,7 @@ const PopupWorkingList = ({
                             <Task
                                 key={id}
                                 firstUnFinishId={firstUnFinishId}
-                                mainId={mainId}
+                                taskListId={taskListId}
                                 dataTask={{
                                     id, statusFinish, title, task,
                                     note, attact, updatedDate,
