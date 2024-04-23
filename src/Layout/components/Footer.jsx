@@ -24,13 +24,20 @@ export const FooterComponents = ({ currentPath }) => {
         },
         {
             id: 3,
+            title: 'Virtual Konsultasi',
+            iconMenu: 'fa fa-solid fa-robot',
+            path: '/chat-bot',
+            onClick: () => handelNavigate('/chat-bot'),
+        },
+        {
+            id: 4,
             title: 'Konsultasi',
             iconMenu: 'ri-chat-1-fill',
             path: '/chat',
             onClick: () => handelNavigate('/chat'),
         },
         {
-            id: 4,
+            id: 5,
             title: 'Account',
             iconMenu: 'ri-user-3-line',
             path: '/account',

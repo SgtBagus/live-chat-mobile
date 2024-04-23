@@ -13,6 +13,7 @@ import Page404 from "../Layout/Page404";
 import Home from "../Pages/Home";
 import Account from "../Pages/Account";
 import Chat from "../Pages/Chat";
+import ChatBox from "../Pages/ChatBox";
 
 import { AuthContext } from "../context/AuthContext";
 import WorkingFlow from "../Pages/WorkingFlow";
@@ -40,7 +41,7 @@ const RoutesComponents = () => {
   const HasRoute = ({ children }) => {
     if (!isLoading) {
       if (currentUser) {
-        return <Navigate to="/working-flow" />;
+        return <Navigate to="/" />;
       }
     }
 
@@ -62,6 +63,14 @@ const RoutesComponents = () => {
         element={
           <ProtectedRoute>
             {RenderDefaultLayout(<WorkingFlow />, "/working-flow" )}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="chat-bot"
+        element={
+          <ProtectedRoute>
+            {RenderDefaultLayout(<ChatBox />, "/chat-bot" )}
           </ProtectedRoute>
         }
       />
