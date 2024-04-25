@@ -1,39 +1,45 @@
 import {
-    setDoc, doc, updateDoc, serverTimestamp,
+    setDoc, doc, serverTimestamp,
 } from "firebase/firestore";
 
 import { db } from "../../../firebase";
 
-const SETUP_MESSAGES_NEW = async (adminData, currentData, combinedId, callback = () => {}) => {
+import { AI_DATA } from "./config";
+
+const SETUP_MESSAGES_NEW = async (data, currentUser, callback) => {
+    const { 
+        UID: uidAI, DISPLAY_NAME: aiDisplayName, PHOTO_URL: aiPhotoUrl,
+    } = AI_DATA;
+
     const {
-        uid: adminUid, displayName: adminDisplayName, photoURL: adminPhotoURL,
-    } = adminData;
-    
-    const {
-        uid: currentUid, displayName: currentDisplayName, photoURL: currentPhotoURL,
-    } = currentData;
+        uid: currentUid,
+        // displayName: currentDisplayName, photoURL: currentPhotoURL,
+    } = currentUser;
+
+    const AI_UID  = `chat-box-userAi-${currentUid}`
   
-    await setDoc(doc(db, "chats", combinedId), { messages: [], allow_chat: true });
+    await setDoc(doc(db, "chatBots", AI_UID), { messages: [], allow_chat: true });
     
-    await updateDoc(doc(db, "userChats", currentUid), {
-        [combinedId + ".userInfo"]: {
-          uid: adminUid,
-          displayName: adminDisplayName,
-          photoURL: adminPhotoURL,
+    await setDoc(doc(db, "userChatBots", currentUid), {
+        idChatBot: AI_UID,
+        [AI_UID + ".userInfo"]: {
+          uid: uidAI,
+          displayName: aiDisplayName,
+          photoURL: aiPhotoUrl,
         },
-        [combinedId + ".date"]: serverTimestamp(),
-    });
-  
-    await updateDoc(doc(db, "userChats", adminUid), {
-        [combinedId + ".userInfo"]: {
-          uid: currentUid,
-          displayName: currentDisplayName,
-          photoURL: currentPhotoURL,
-        },
-        [combinedId + ".date"]: serverTimestamp(),
+        [AI_UID + ".date"]: serverTimestamp(),
     });
 
-    callback();
+    // await setDoc(doc(db, "userChatBots", currentUid), {
+    //     [COMBINE_ID + ".userInfo"]: {
+    //       uid: uidAI,
+    //       displayName: aiDisplayName,
+    //       photoURL: aiPhotoUrl,
+    //     },
+    //     [COMBINE_ID + ".date"]: serverTimestamp(),
+    // });
+
+    callback(AI_UID);
 }
 
 export default SETUP_MESSAGES_NEW;

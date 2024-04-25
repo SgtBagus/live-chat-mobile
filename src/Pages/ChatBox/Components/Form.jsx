@@ -1,37 +1,31 @@
-import React, { useState } from "react";
-// import { v4 as uuid } from "uuid";
+import React, { useState, useContext } from "react";
+import { v4 as uuid } from "uuid";
 import update from "immutability-helper";
-// import { NotificationManager } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import {
-//   arrayUnion, serverTimestamp, Timestamp, updateDoc,
-//   onSnapshot,
-//   doc,
-//   collection, query, where
+  arrayUnion, serverTimestamp, Timestamp, updateDoc, doc,
 } from "firebase/firestore";
 
-// import { db } from "../../../firebase";
+import { db } from "../../../firebase";
 
-// import { ChatContext } from "../../../context/ChatContext";
-// import { NotificationManager } from "react-notifications";
-// import { catchError } from "../../../Helper/helper";
-// import { AuthContext } from "../../../context/AuthContext";
+import { ChatBotContext } from "../../../context/ChatBotContext";
+import { AuthContext } from "../../../context/AuthContext";
+import { catchError } from "../../../Helper/helper";
 
-// import { catchError } from "../../../Helper/helper";
+import SETUP_MESSAGES_NEW from "../config/data";
 
-// import SETUP_MESSAGES_NEW from "../config/data";
-
-import { useNLP } from "../config/usenlp";
+import { USE_NLP } from "../config/usenlp";
+import { AI_DATA } from "../config/config";
 
 const ChatForm = ({ chatBotDatas = {} }) => {
     const [form, setForm] = useState({ text: "" });
     const [onSend, setOnSend] = useState(false);
     
     
-    // const { currentUser } = useContext(AuthContext);
-    // const { data } = useContext(ChatContext);
+    const { currentUser } = useContext(AuthContext);
+    const { data } = useContext(ChatBotContext);
 
     const { text } = form;
-    const { respon } = useNLP({ data: chatBotDatas, sendMessage: text });
 
     const changeInputHandler = async (type, val) => {
         const newForm = update(form, {
@@ -42,73 +36,55 @@ const ChatForm = ({ chatBotDatas = {} }) => {
     };
 
     const sumbitMessage = async () => {
-        console.log(respon.answer);
-
-        // if (data.chatId !== 'null') {
-        //     sendMessate(data.chatId);
-        // } else {
-        //     const combinedId = currentUser.uid > data ? currentUser.uid + adminUid : adminUid + currentUser.uid || null;
-
-        //     SETUP_MESSAGES_NEW(dataAdmin, currentUser, combinedId, async () => {
-        //         sendMessate(combinedId);
-        //     });
-        // }
+        if (data.chatId !== 'null') {
+            sendMessate(data.chatId);
+        } else {
+            SETUP_MESSAGES_NEW(data, currentUser, async (aiUID) => {
+                sendMessate(aiUID);
+            });
+        }
     }
 
-    // const sendMessate = async (dataChatId) => {
-    //     try {
-    //         if (file) {
-    //             const thisFileisImage = checkThisFileIsImageOrNot(file);
-    //             if (!thisFileisImage) throw new Error ('Hanya Boleh Mengupload Gambar');
-
-    //             const uploadImage = await uploadFile(file, 'message/images/');
-                
-    //             await updateDoc(doc(db, "chats", dataChatId), {
-    //                 messages: arrayUnion({
-    //                     id: uuid(),
-    //                     text,
-    //                     senderId: currentUser.uid,
-    //                     date: Timestamp.now(),
-    //                     img: uploadImage,
-    //                 }),
-    //             });
-    //         } else {
-    //             await updateDoc(doc(db, "chats", dataChatId), {
-    //                 messages: arrayUnion({
-    //                     id: uuid(),
-    //                     text,
-    //                     senderId: currentUser.uid,
-    //                     date: Timestamp.now(),
-    //                 }),
-    //             });
-    //         }
-
-    //         let lastMessageText = text;
-    //         if (file && text === '') {
-    //             lastMessageText = checkThisFileIsImageOrNot(file) ? 'Mengkirimkan Gambar' : 'Mengikirimkan Video';
-    //         }
-          
-    //         await updateDoc(doc(db, "userChats", currentUser.uid), {
-    //             [dataChatId + ".lastMessage"]: {
-    //                 text: lastMessageText,
-    //             },
-    //             [dataChatId + ".date"]: serverTimestamp(),
-    //         });
+    const sendMessate = async (aiUID) => {
+        setOnSend(true);
+    
+        console.log(aiUID);
+        try {
+            await updateDoc(doc(db, "chatBots", aiUID), {
+                messages: arrayUnion({
+                    id: uuid(),
+                    text,
+                    senderId: currentUser.uid,
+                    date: Timestamp.now(),
+                }),
+            });
         
-    //         await updateDoc(doc(db, "userChats", adminUid), {
-    //             [dataChatId + ".lastMessage"]: {
-    //                 text: lastMessageText,
-    //             },
-    //             [dataChatId + ".date"]: serverTimestamp(),
-    //         });
+            const { answer: nlpAnswer } = await USE_NLP({ data: chatBotDatas, sendMessage: text });
+            await updateDoc(doc(db, "chatBots", aiUID), {
+                messages: arrayUnion({
+                    id: uuid(),
+                    text: nlpAnswer,
+                    senderId: AI_DATA.UID,
+                    date: Timestamp.now(),
+                }),
+            });
+
+            let lastMessageText = text;
+          
+            await updateDoc(doc(db, "userChatBots", currentUser.uid), {
+                [aiUID + ".lastMessage"]: {
+                    text: lastMessageText,
+                },
+                [aiUID + ".date"]: serverTimestamp(),
+            });
             
-    //         setForm({ file: null, text: "" })
-    //     } catch (err) {
-    //         NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
-    //     } finally {
-    //         setOnSend(false);
-    //     }
-    // }
+            setForm({ text: "" })
+        } catch (err) {
+            NotificationManager.error(catchError(err), 'Terjadi Kesalahan', 5000);
+        } finally {
+            setOnSend(false);
+        }
+    }
 
     return (
         <>
@@ -158,14 +134,14 @@ const ChatForm = ({ chatBotDatas = {} }) => {
             <br />
             <br />
             <br />
-            <div>
+            {/* <div>
                 <div>
                     Respon:
                     <div dangerouslySetInnerHTML={{ __html: respon.answer || "" }} />
                 </div>
                 <div>scope: {respon.score}</div>
                 <pre>{JSON.stringify(respon, null, 2)}</pre>
-            </div>
+            </div> */}
         </>
     );
 };

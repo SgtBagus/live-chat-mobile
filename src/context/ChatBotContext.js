@@ -1,8 +1,8 @@
 import { createContext, useReducer } from "react";
 
-export const ChatBoxContext = createContext();
+export const ChatBotContext = createContext();
 
-export const ChatBoxContextProvider = ({ children }) => {
+export const ChatBotContextProvider = ({ children }) => {
   const INITIAL_STATE = {
     chatId: "null",
     user: {},
@@ -12,7 +12,6 @@ export const ChatBoxContextProvider = ({ children }) => {
     switch (action.type) {
       case "SET_DEFAULT_USER":
         return {
-          user: action.payload.user,
           chatId: action.payload.chatId,
         };
 
@@ -24,8 +23,8 @@ export const ChatBoxContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(ChatBoxReducer, INITIAL_STATE);
 
   return (
-    <ChatBoxContext.Provider value={{ data: state, dispatch }}>
+    <ChatBotContext.Provider value={{ data: state, dispatch }}>
       {children}
-    </ChatBoxContext.Provider>
+    </ChatBotContext.Provider>
   );
 };

@@ -4,7 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 
 import { db } from "../../firebase";
 
-import { ChatContextProvider } from "../../context/ChatContext";
+import { ChatBotContextProvider } from "../../context/ChatBotContext";
 
 import ChatForm from "./Components/Form";
 import Messages from "./Components/Messages";
@@ -32,7 +32,7 @@ const Chat = () => {
   }, []);
 
   return (
-    <ChatContextProvider>
+    <ChatBotContextProvider>
       <Container className="chatting-header prfile-header">
         <div className="custom-container">
           <div className="header-box">
@@ -64,7 +64,7 @@ const Chat = () => {
           <ChatForm chatBotDatas={chatBotDatas} />
         </div>
       </Container>
-    </ChatContextProvider>
+    </ChatBotContextProvider>
   );
 };
 

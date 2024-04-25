@@ -1,49 +1,47 @@
 import React, { useContext, useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
+import { NotificationManager } from 'react-notifications';
 
 import { AuthContext } from "../../../context/AuthContext";
-import { ChatContext } from "../../../context/ChatContext";
+import { ChatBotContext } from "../../../context/ChatBotContext";
 
 import Message from "./Message";
 
 import Loading from "../../../Components/Loading";
 
 import { db } from "../../../firebase";
+import { catchError } from "../../../Helper/helper";
 
 const Messages = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState([]);
 
     const { currentUser } = useContext(AuthContext);
-    const { data: { chatId }, dispatch } = useContext(ChatContext);
+    const { data: { chatId }, dispatch } = useContext(ChatBotContext);
 
     useEffect(() => {
         setIsLoading(true);
 
         const getFetchChats = () => {
-            const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-                const chatMessage = Object.entries(doc.data())[0] || null;
+            const unsub = onSnapshot(doc(db, "userChatBots", currentUser.uid), (doc) => {
+                const { idChatBot } = doc.data() || { idChatBot: null };
 
-                if (chatMessage) {
+                console.log(idChatBot);
+                if (idChatBot) {
                     dispatch({
                         type: "SET_DEFAULT_USER",
-                        payload: {      
-                            chatId: chatMessage[0],
-                            user: {
-                                displayName: chatMessage[1].userInfo.displayName,
-                                photoURL: chatMessage[1].userInfo.photoURL,
-                                uid: chatMessage[1].userInfo.uid,
-                            },
-                        },
+                        payload: { chatId: idChatBot },
                     });
                 }
+            }, (error) => {
+                NotificationManager.error(catchError(error), 'Terjadi Kesalahan', 5000);
             });
 
             return () => { unsub() };
         };
 
         const getMessate = () => {
-            const unsub = onSnapshot(doc(db, "chats", chatId), (doc) => {
+            const unsub = onSnapshot(doc(db, "chatBots", chatId), (doc) => {
                 doc.exists() && setMessages(doc.data().messages);
         
                 setIsLoading(false);
@@ -89,7 +87,7 @@ const Messages = () => {
                                   }}
                                 >
                                     <div className="msg-bubble w-100" style={{ borderRadius: '15px'}}>
-                                        Message nya masih Kosong, ayo mulai chat dengan admin !
+                                        Masih Kosong, silakan mulai chat nya !
                                     </div>
                                 </div>
                             )
