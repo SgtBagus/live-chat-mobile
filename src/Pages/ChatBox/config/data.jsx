@@ -11,10 +11,7 @@ const SETUP_MESSAGES_NEW = async (data, currentUser, callback) => {
         UID: uidAI, DISPLAY_NAME: aiDisplayName, PHOTO_URL: aiPhotoUrl,
     } = AI_DATA;
 
-    const {
-        uid: currentUid,
-        // displayName: currentDisplayName, photoURL: currentPhotoURL,
-    } = currentUser;
+    const { uid: currentUid } = currentUser;
 
     const AI_UID  = `chat-box-userAi-${currentUid}`
   
@@ -29,15 +26,6 @@ const SETUP_MESSAGES_NEW = async (data, currentUser, callback) => {
         },
         [AI_UID + ".date"]: serverTimestamp(),
     });
-
-    // await setDoc(doc(db, "userChatBots", currentUid), {
-    //     [COMBINE_ID + ".userInfo"]: {
-    //       uid: uidAI,
-    //       displayName: aiDisplayName,
-    //       photoURL: aiPhotoUrl,
-    //     },
-    //     [COMBINE_ID + ".date"]: serverTimestamp(),
-    // });
 
     callback(AI_UID);
 }
