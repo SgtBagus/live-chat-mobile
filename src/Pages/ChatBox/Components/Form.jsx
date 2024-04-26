@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import update from "immutability-helper";
 import { NotificationManager } from 'react-notifications';
 import {
-  arrayUnion, serverTimestamp, Timestamp, updateDoc, doc,
+  arrayUnion, serverTimestamp, Timestamp, updateDoc, doc, onSnapshot,
 } from "firebase/firestore";
 
 import { db } from "../../../firebase";
@@ -17,15 +17,31 @@ import SETUP_MESSAGES_NEW from "../config/data";
 import { USE_NLP } from "../config/usenlp";
 import { AI_DATA } from "../config/config";
 
-const ChatForm = ({ chatBotDatas = {} }) => {
+const ChatForm = () => {
     const [form, setForm] = useState({ text: "" });
     const [onSend, setOnSend] = useState(false);
-    
+    const [chatBotDatas, setChatBotDatas] = useState({
+      locale: 'en-US',
+      name: 'Corpus',
+      data: [],
+    });
     
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatBotContext);
 
     const { text } = form;
+
+    useEffect(() => {
+        const unSub = onSnapshot(doc(db, "chatBotDatas", 'qLiecKdChB39oFR0xviu'), (doc) => {
+            setChatBotDatas(doc.data());
+        }, (error) => {
+            NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
+        });
+
+        return async () => {
+            await unSub();
+        };
+    }, []);
 
     const changeInputHandler = async (type, val) => {
         const newForm = update(form, {
@@ -47,8 +63,7 @@ const ChatForm = ({ chatBotDatas = {} }) => {
 
     const sendMessate = async (aiUID) => {
         setOnSend(true);
-    
-        console.log(aiUID);
+
         try {
             await updateDoc(doc(db, "chatBots", aiUID), {
                 messages: arrayUnion({

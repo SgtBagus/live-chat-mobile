@@ -26,7 +26,6 @@ const Messages = () => {
             const unsub = onSnapshot(doc(db, "userChatBots", currentUser.uid), (doc) => {
                 const { idChatBot } = doc.data() || { idChatBot: null };
 
-                console.log(idChatBot);
                 if (idChatBot) {
                     dispatch({
                         type: "SET_DEFAULT_USER",

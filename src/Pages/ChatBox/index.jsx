@@ -1,36 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { NotificationManager } from "react-notifications";
-import { doc, onSnapshot } from "firebase/firestore";
-
-import { db } from "../../firebase";
-
+import React from "react";
 import { ChatBotContextProvider } from "../../context/ChatBotContext";
 
 import ChatForm from "./Components/Form";
 import Messages from "./Components/Messages";
 import Container from "../../Components/Container";
 
-import { catchError } from "../../Helper/helper";
-
 const Chat = () => {
-  const [chatBotDatas, setChatBotDatas] = useState({
-    locale: 'en-US',
-    name: 'Corpus',
-    data: [],
-  });
-
-  useEffect(() => {
-    const unSub = onSnapshot(doc(db, "chatBotDatas", 'qLiecKdChB39oFR0xviu'), (doc) => {
-      setChatBotDatas(doc.data());
-    }, (error) => {
-        NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
-    });
-
-    return async () => {
-      await unSub();
-    };
-  }, []);
-
   return (
     <ChatBotContextProvider>
       <Container className="chatting-header prfile-header">
@@ -61,7 +36,7 @@ const Chat = () => {
           }}
         >
           <Messages />
-          <ChatForm chatBotDatas={chatBotDatas} />
+          <ChatForm />
         </div>
       </Container>
     </ChatBotContextProvider>
