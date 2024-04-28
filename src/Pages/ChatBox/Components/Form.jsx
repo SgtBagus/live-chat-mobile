@@ -3,19 +3,19 @@ import { v4 as uuid } from "uuid";
 import update from "immutability-helper";
 import { NotificationManager } from 'react-notifications';
 import {
-  arrayUnion, serverTimestamp, Timestamp, updateDoc, doc, onSnapshot,
+  arrayUnion, serverTimestamp, Timestamp, updateDoc, doc, onSnapshot, query, collection,
 } from "firebase/firestore";
 
 import { db } from "../../../firebase";
 
 import { ChatBotContext } from "../../../context/ChatBotContext";
 import { AuthContext } from "../../../context/AuthContext";
-import { catchError } from "../../../Helper/helper";
 
-import SETUP_MESSAGES_NEW from "../config/data";
+import { catchError } from "../../../Helper/helper";
 
 import { USE_NLP } from "../config/usenlp";
 import { AI_DATA } from "../config/config";
+import SETUP_MESSAGES_NEW from "../config/data";
 
 const ChatForm = () => {
     const [form, setForm] = useState({ text: "" });
@@ -32,8 +32,16 @@ const ChatForm = () => {
     const { text } = form;
 
     useEffect(() => {
-        const unSub = onSnapshot(doc(db, "chatBotDatas", 'qLiecKdChB39oFR0xviu'), (doc) => {
-            setChatBotDatas(doc.data());
+        const queryVariabel = query(collection(db, "chatBotDatas"));
+        const unSub = onSnapshot(queryVariabel, (res) => {
+            const getData = []
+            res.forEach((doc) => { getData.push(doc.data()) });
+
+            setChatBotDatas({
+                locale: 'en-US',
+                name: 'Corpus',
+                data: getData,
+            });
         }, (error) => {
             NotificationManager.warning(catchError(error), 'Terjadi Kesalahan', 5000);
         });
@@ -142,21 +150,6 @@ const ChatForm = () => {
                     }
                 </button>
             </form>
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            {/* <div>
-                <div>
-                    Respon:
-                    <div dangerouslySetInnerHTML={{ __html: respon.answer || "" }} />
-                </div>
-                <div>scope: {respon.score}</div>
-                <pre>{JSON.stringify(respon, null, 2)}</pre>
-            </div> */}
         </>
     );
 };
