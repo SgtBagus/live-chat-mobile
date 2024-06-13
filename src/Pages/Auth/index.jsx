@@ -44,7 +44,7 @@ const AuthLogin = () => {
                     }}
                 >
                     <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Blue_Archive_EN_logo.svg/2560px-Blue_Archive_EN_logo.svg.png"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Service_mark.svg/2560px-Service_mark.svg.png"
                         className="img-fluid text-center"
                         alt=""
                         style={{
