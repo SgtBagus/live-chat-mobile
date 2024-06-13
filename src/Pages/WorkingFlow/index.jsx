@@ -60,9 +60,12 @@ const WorkingFlow = () => {
             <Container className="home-section pb-3">
                 <div className="home-box">
                     <img
-                        src="https://a.storyblok.com/f/178900/640x360/4e388f11a0/8ca08c706af33131e5606513919e01941669178926_main.png/m/filters:quality(95)format(webp)"
+                        src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         className="img-fluid"
                         alt="Banner Images"
+                        style={{
+                            filter: 'brightness(80%)',
+                        }}
                     />
                     <div className="home-container">
                         <div>

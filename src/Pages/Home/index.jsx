@@ -12,16 +12,20 @@ const Home = () => {
       <Container className="home-section">
         <div className="home-box">
           <img
-            src="https://i.pinimg.com/736x/c2/ae/9e/c2ae9e92215afbd25a8173a02adab7f4.jpg"
+            src="https://plus.unsplash.com/premium_photo-1699387204388-120141c76d51?q=80&w=1978&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             className="img-fluid"
             alt="Banner Images"
+            style={{
+              transform: 'scaleX(-1)',
+              filter: 'brightness(80%)',
+            }}
           />
           <div className="home-container">
             <div>
-              <h4>Hello &amp; Mulai Kordinasi nya disini ya nanti !</h4>
+              <h4>Hello &amp; Silakan mulai konsultasinya anda !</h4>
               <Button
                 className="w-75 explore-btn"
-                label="Explore Now"
+                label="Konsultasi Sekarang !"
                 link="#"
               />
             </div>
@@ -31,28 +35,33 @@ const Home = () => {
 
       <Container
         className="section-t-space-3 cloth-category-section"
-        title="Kategori"
-        link="/category"
+        title="Penyakin yang bisa di bantu !"
         linkName="Lihat Semua Kategori"
       >
         <CategoryList
           data={[
             {
               id: 1,
-              src: 'https://media.printables.com/media/prints/415756/images/3449561_0766b7c8-1a3a-46e6-a783-5708bb623946/thumbs/inside/1280x960/png/qian-nian-xue-yuan.webp',
-              title: 'Category List',
+              src: 'https://w7.pngwing.com/pngs/42/77/png-transparent-medicine-computer-icons-health-care-medical-assistant-health-love-text-heart-thumbnail.png',
+              title: 'Demam',
               link: '#',
             },
             {
               id: 2,
-              src: 'https://media.printables.com/media/prints/415756/images/3449561_0766b7c8-1a3a-46e6-a783-5708bb623946/thumbs/inside/1280x960/png/qian-nian-xue-yuan.webp',
-              title: 'Category List',
+              src: 'https://w7.pngwing.com/pngs/42/77/png-transparent-medicine-computer-icons-health-care-medical-assistant-health-love-text-heart-thumbnail.png',
+              title: 'Sakit Kepala',
               link: '#',
             },
             {
               id: 3,
-              src: 'https://media.printables.com/media/prints/415756/images/3449561_0766b7c8-1a3a-46e6-a783-5708bb623946/thumbs/inside/1280x960/png/qian-nian-xue-yuan.webp',
-              title: 'Category List',
+              src: 'https://w7.pngwing.com/pngs/42/77/png-transparent-medicine-computer-icons-health-care-medical-assistant-health-love-text-heart-thumbnail.png',
+              title: 'Susah TIdur',
+              link: '#',
+            },
+            {
+              id: 4,
+              src: 'https://w7.pngwing.com/pngs/42/77/png-transparent-medicine-computer-icons-health-care-medical-assistant-health-love-text-heart-thumbnail.png',
+              title: 'Stres',
               link: '#',
             },
           ]}

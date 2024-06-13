@@ -1,5 +1,5 @@
 import { dock } from "@nlpjs/core";
-import { LangEn } from "@nlpjs/lang-en";
+import { LangId } from "@nlpjs/lang-id";
 import { Nlp } from "@nlpjs/nlp";
 
 let nlp;
@@ -10,7 +10,7 @@ async function boot({ data = {} }) {
     const container = dock.getContainer();
 
     container.use(Nlp);
-    container.use(LangEn);
+    container.use(LangId);
 
     nlp = container.get("nlp");
     await nlp.addCorpus(data);
