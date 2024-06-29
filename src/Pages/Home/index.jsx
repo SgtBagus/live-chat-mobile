@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 import Container from "../../Components/Container";
 import CategoryList from "../../Components/CategoryList";
@@ -7,6 +8,11 @@ import Accordion from "../../Components/Accordion";
 import Button from "../../Components/Button";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const handelNavigate = (path) => {
+    return navigate(path);
+  };
+
   return (
     <>
       <Container className="home-section">
@@ -26,7 +32,7 @@ const Home = () => {
               <Button
                 className="w-75 explore-btn"
                 label="Konsultasi Sekarang !"
-                link="#"
+                onClick={() => handelNavigate('/chat-bot')}
               />
             </div>
           </div>
@@ -105,20 +111,32 @@ const Home = () => {
           data={[
             {
               id: 1,
-              title: 'Lorem Ipsum',
-              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+              title: 'Apakah aplikasi ini sudah sepenuhnya dikembangkan ?',
+              desc: 'Aplikasi ini masih dalam tahap perkembangan. Kami terus bekerja untuk memperbaiki dan memperluas fitur-fitur yang ada untuk memberikan pengalaman terbaik kepada pengguna.',
               show: true,
             },
             {
               id: 2,
-              title: 'Lorem Ipsum',
-              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+              title: 'Apakah chatbot ini dapat menjawab semua pertanyaan kesehatan ?',
+              desc: 'Chatbot ini masih belum bisa menjelaskan beberapa penyakit di luar kategori yang telah ditentukan. Kami merekomendasikan Anda untuk memeriksa kategori yang tersedia sebelum mengajukan pertanyaan.',
               show: false,
             },
             {
               id: 3,
-              title: 'Lorem Ipsum',
-              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+              title: 'Apakah saya bisa mendapatkan penanganan profesional melalui aplikasi ini ?',
+              desc: 'Untuk penanganan profesional yang lebih spesifik dan mendalam, kami sangat menyarankan Anda untuk berkonsultasi langsung dengan dokter. Aplikasi ini dimaksudkan untuk memberikan informasi awal dan bukan untuk menggantikan saran medis profesional.',
+              show: false,
+            },
+            {
+              id: 4,
+              title: 'Apakah data pribadi saya aman ?',
+              desc: 'Kami sangat memperhatikan privasi dan keamanan data Anda. Semua informasi yang Anda berikan akan disimpan dengan aman dan tidak akan dibagikan kepada pihak ketiga tanpa izin Anda.',
+              show: false,
+            },
+            {
+              id: 5,
+              title: 'Bagaimana cara memberikan masukan atau saran ?',
+              desc: 'Kami sangat menghargai masukan dan saran dari pengguna. Anda dapat memberikan masukan dengan cara menghubungi email saya yaitu "procw57@gmail.com" untuk umpan balik di dalam aplikasi. Masukan Anda sangat berharga untuk peningkatan layanan kami.',
               show: false,
             },
           ]}
